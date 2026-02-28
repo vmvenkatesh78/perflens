@@ -7,7 +7,6 @@
 Patch release — npm package name fix and documentation corrections.
 
 ### Fixed
-
 - Package renamed to `react-perflens` on npm (`perflens` was blocked by registry)
 - README install command and import paths now reference `react-perflens`
 - Package name in package.json synced with npm registry
