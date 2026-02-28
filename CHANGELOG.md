@@ -2,14 +2,23 @@
 
 ## [Unreleased]
 
+### Added
+- Analyzer engine — sweeps tracked components on a 2s interval, produces insights
+- `slow-render` rule — flags components over the 16ms frame budget
+- `excessive-rerenders` rule — counts renders in a sliding time window
+- `rapid-mount-unmount` rule — catches destroy-recreate loops
+- `wasted-memo` rule — detects memoization that isn't saving enough
+- `onInsight` callback fires for each new insight (pipe to analytics, logging, etc.)
+- 30 new analyzer tests (96 total across 12 test files)
+
 ### Changed
 - `useRenderTracker` no longer calls `recordRender` — Profiler handles all timing
-- Removed `profiledRenderCount` from `ComponentPerfData` (was splitting hook vs Profiler renders, unnecessary)
+- Removed `profiledRenderCount` from `ComponentPerfData` (unnecessary split)
 - Prop change detection wired into `useRenderTracker` (was a no-op before)
 
 ### Improved
 - Human-readable JSDoc across all public APIs
-- Better inline comments explaining "why" not "what"
+- Rewrote `docs/insights.md` with practical fix guidance for each rule
 
 ## [0.1.0] - 2026-02-22
 
