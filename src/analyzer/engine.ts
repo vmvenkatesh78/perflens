@@ -1,10 +1,16 @@
 import type { ComponentPerfData, Insight, PerfLensThresholds } from '../types';
 import { bySeverity } from './utils';
 import * as slowRender from './rules/slow-render';
+import * as excessiveRerenders from './rules/excessive-rerenders';
+import * as rapidMountUnmount from './rules/rapid-mount-unmount';
+import * as wastedMemo from './rules/wasted-memo';
 
-// all active rules — add new ones here as they're implemented
+// all active rules — add new ones here as they ship
 const rules = [
   slowRender,
+  excessiveRerenders,
+  rapidMountUnmount,
+  wastedMemo,
 ];
 
 /**

@@ -47,7 +47,8 @@ describe('runAnalyzer', () => {
   it('detects slow components', () => {
     const components = new Map([
       ['Fast', makeComponent('Fast', { avgDuration: 2 })],
-      ['Slow', makeComponent('Slow', { avgDuration: 25, maxDuration: 40 })],
+      // baseDuration high enough that wasted-memo doesn't also trigger
+      ['Slow', makeComponent('Slow', { avgDuration: 25, maxDuration: 40, lastBaseDuration: 50 })],
     ]);
 
     const insights = runAnalyzer(components, thresholds);
@@ -57,8 +58,8 @@ describe('runAnalyzer', () => {
 
   it('sorts by severity — critical before warning', () => {
     const components = new Map([
-      ['Warning', makeComponent('Warning', { avgDuration: 20 })],
-      ['Critical', makeComponent('Critical', { avgDuration: 40, maxDuration: 50 })],
+      ['Warning', makeComponent('Warning', { avgDuration: 20, lastBaseDuration: 40 })],
+      ['Critical', makeComponent('Critical', { avgDuration: 40, maxDuration: 50, lastBaseDuration: 80 })],
     ]);
 
     const insights = runAnalyzer(components, thresholds);
@@ -68,11 +69,11 @@ describe('runAnalyzer', () => {
   });
 
   it('deduplicates by insight id (latest wins)', () => {
-    // same component name → same insight id → should only appear once
     const components = new Map([
-      ['Slow', makeComponent('Slow', { avgDuration: 25 })],
+      ['Slow', makeComponent('Slow', { avgDuration: 25, lastBaseDuration: 50 })],
     ]);
 
+    // one component, one rule fires → one insight
     const insights = runAnalyzer(components, thresholds);
     expect(insights).toHaveLength(1);
 
@@ -86,7 +87,7 @@ describe('runAnalyzer', () => {
     // we can't easily inject a broken rule without restructuring, so
     // instead we verify the engine doesn't throw with valid data.
     const components = new Map([
-      ['Normal', makeComponent('Normal', { avgDuration: 25 })],
+      ['Normal', makeComponent('Normal', { avgDuration: 25, lastBaseDuration: 50 })],
     ]);
 
     expect(() => runAnalyzer(components, thresholds)).not.toThrow();
