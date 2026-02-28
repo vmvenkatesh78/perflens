@@ -2,16 +2,18 @@
 
 React performance toolkit. Track renders, surface insights, fix bottlenecks.
 
-> **Status:** Pre-release. Core hooks and store are functional. Panel and insights in upcoming versions.
+> **Status:** Pre-release. Core tracking, analyzer rules, and floating panel are functional. Not yet on npm.
 ## Quick Start
 
 ```tsx
 import { PerfLensProvider, PerfLensTrack, useRenderTracker } from 'perflens';
+import { PerfLensPanel } from 'perflens/panel';
 
 function App() {
   return (
     <PerfLensProvider enabled={process.env.NODE_ENV === 'development'}>
       <YourApp />
+      <PerfLensPanel />
     </PerfLensProvider>
   );
 }
@@ -72,7 +74,11 @@ Returns the store directly. Build custom UIs or pipe data externally.
 
 ### `<PerfLensPanel />`
 
-Floating overlay. Toggle with `Ctrl+Shift+P`. Ships in v0.2.0.
+Floating overlay. Toggle with `Ctrl+Shift+P`. Import from `perflens/panel` — separated so the UI code doesn't bloat your core bundle.
+
+```tsx
+import { PerfLensPanel } from 'perflens/panel';
+```
 
 ## Constraints
 
