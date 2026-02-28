@@ -1,5 +1,16 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+- `useRenderTracker` no longer calls `recordRender` — Profiler handles all timing
+- Removed `profiledRenderCount` from `ComponentPerfData` (was splitting hook vs Profiler renders, unnecessary)
+- Prop change detection wired into `useRenderTracker` (was a no-op before)
+
+### Improved
+- Human-readable JSDoc across all public APIs
+- Better inline comments explaining "why" not "what"
+
 ## [0.1.0] - 2026-02-22
 
 ### Added
@@ -20,5 +31,4 @@
 - Mutable store over Redux/Zustand — avoids GC pressure at high write rates
 - Circular buffer over arrays — bounded memory per component
 - Interval-based panel reads over reactive updates — decouples write/render frequency
-- `useRenderTracker` records -1 for duration (no Profiler at hook level)
 - `PerfLensTrack` wraps with Profiler for real timing data
