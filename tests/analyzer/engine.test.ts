@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { runAnalyzer } from '../../src/analyzer/engine';
-import type { ComponentPerfData, PerfLensThresholds } from '../../src/types';
+import type { ComponentPerfData } from '../../src/types';
 import { DEFAULT_THRESHOLDS } from '../../src/constants';
 
 function makeComponent(
@@ -59,7 +59,10 @@ describe('runAnalyzer', () => {
   it('sorts by severity — critical before warning', () => {
     const components = new Map([
       ['Warning', makeComponent('Warning', { avgDuration: 20, lastBaseDuration: 40 })],
-      ['Critical', makeComponent('Critical', { avgDuration: 40, maxDuration: 50, lastBaseDuration: 80 })],
+      [
+        'Critical',
+        makeComponent('Critical', { avgDuration: 40, maxDuration: 50, lastBaseDuration: 80 }),
+      ],
     ]);
 
     const insights = runAnalyzer(components, thresholds);

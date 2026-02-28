@@ -69,10 +69,7 @@ function PerfLensProviderInner({
     );
   }
 
-  const onRender = useMemo(
-    () => createProfilerCallback(storeRef.current!),
-    [],
-  );
+  const onRender = useMemo(() => createProfilerCallback(storeRef.current!), []);
 
   const contextValue = useMemo<PerfLensContextValue>(
     () => ({
@@ -123,12 +120,10 @@ function PerfLensProviderInner({
 
 // Internal — other hooks grab context through this
 
-/** @throws if called outside PerfLensProvider */export function usePerfLensContext(): PerfLensContextValue {
+/** @throws if called outside PerfLensProvider */ export function usePerfLensContext(): PerfLensContextValue {
   const ctx = useContext(PerfLensContext);
   if (!ctx) {
-    throw new Error(
-      '[perflens] Hook called outside <PerfLensProvider>. Wrap your app first.',
-    );
+    throw new Error('[perflens] Hook called outside <PerfLensProvider>. Wrap your app first.');
   }
   return ctx;
 }

@@ -2,11 +2,22 @@
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-02-28
+
+Patch release — npm package name fix and documentation corrections.
+
+### Fixed
+
+- Package renamed to `react-perflens` on npm (`perflens` was blocked by registry)
+- README install command and import paths now reference `react-perflens`
+- Package name in package.json synced with npm registry
+
 ## [0.2.0] - 2026-02-28
 
 First npm publish. Core tracking, 4 analyzer rules, and floating panel.
 
 ### Added
+
 - `PerfLensPanel` — floating overlay with component table and insight list
   - Keyboard toggle (Ctrl+Shift+P, configurable)
   - Collapsible pill mode with insight count badge
@@ -23,17 +34,20 @@ First npm publish. Core tracking, 4 analyzer rules, and floating panel.
 - 96 tests across 12 test files
 
 ### Changed
+
 - `PerfLensPanel` moved from `perflens` to `perflens/panel` import path
 - `useRenderTracker` simplified — Profiler handles timing, hook handles counting
 - Removed `profiledRenderCount` from `ComponentPerfData`
 
 ### Bundle size
+
 - Core: 3.73 KB gzipped
 - Full (with panel): 7.96 KB gzipped
 
 ## [0.1.0] - 2026-02-22
 
 ### Added
+
 - `PerfLensProvider` — wraps app with Profiler, zero overhead when disabled
 - `PerfLensTrack` — per-component Profiler wrapper for timing data
 - `useRenderTracker` — hook for render counting, mount/unmount tracking
@@ -46,6 +60,7 @@ First npm publish. Core tracking, 4 analyzer rules, and floating panel.
 - Full TypeScript strict mode, zero `any`
 
 ### Design decisions
+
 - Mutable store over Redux/Zustand — avoids GC pressure at high write rates
 - Circular buffer over arrays — bounded memory per component
 - Interval-based panel reads over reactive updates — decouples write/render frequency

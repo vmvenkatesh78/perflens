@@ -54,8 +54,9 @@ export function PerfLensPanel() {
     if (!visible) return;
 
     const tick = () => {
-      const entries = Array.from(store.components.values())
-        .sort((a, b) => b.renderCount - a.renderCount);
+      const entries = Array.from(store.components.values()).sort(
+        (a, b) => b.renderCount - a.renderCount,
+      );
       setComponents(entries);
       setInsights([...store.insights]);
       setTotalRenders(store.totalRenders);
@@ -68,10 +69,7 @@ export function PerfLensPanel() {
 
   const handleExport = useCallback(() => {
     const snap = store.snapshot();
-    const blob = new Blob(
-      [JSON.stringify(snap, null, 2)],
-      { type: 'application/json' },
-    );
+    const blob = new Blob([JSON.stringify(snap, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -118,14 +116,16 @@ export function PerfLensPanel() {
       >
         ⚡ perflens
         {insights.length > 0 && (
-          <span style={{
-            background: hasLevel(insights, 'critical') ? '#dc2626' : '#ca8a04',
-            color: '#fff',
-            borderRadius: 10,
-            padding: '1px 7px',
-            fontSize: 10,
-            fontWeight: 700,
-          }}>
+          <span
+            style={{
+              background: hasLevel(insights, 'critical') ? '#dc2626' : '#ca8a04',
+              color: '#fff',
+              borderRadius: 10,
+              padding: '1px 7px',
+              fontSize: 10,
+              fontWeight: 700,
+            }}
+          >
             {insights.length}
           </span>
         )}
@@ -154,18 +154,18 @@ export function PerfLensPanel() {
       }}
     >
       {/* header */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '10px 14px',
-        borderBottom: '1px solid #2a2a3e',
-        flexShrink: 0,
-      }}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '10px 14px',
+          borderBottom: '1px solid #2a2a3e',
+          flexShrink: 0,
+        }}
+      >
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ color: '#e8520e', fontWeight: 700, fontSize: 13 }}>
-            ⚡ perflens
-          </span>
+          <span style={{ color: '#e8520e', fontWeight: 700, fontSize: 13 }}>⚡ perflens</span>
           <span style={{ color: '#555', fontSize: 11 }}>
             {components.length} tracked · {totalRenders} renders
           </span>
@@ -185,11 +185,13 @@ export function PerfLensPanel() {
       {!minimized && (
         <>
           {/* tabs */}
-          <div style={{
-            display: 'flex',
-            borderBottom: '1px solid #2a2a3e',
-            flexShrink: 0,
-          }}>
+          <div
+            style={{
+              display: 'flex',
+              borderBottom: '1px solid #2a2a3e',
+              flexShrink: 0,
+            }}
+          >
             <TabBtn
               label="Components"
               active={activeTab === 'components'}
@@ -242,9 +244,7 @@ function ComponentTable({ components }: { components: ComponentPerfData[] }) {
             <TD>
               <span style={{ color: '#ccc', fontWeight: 500 }}>{c.name}</span>
               {!c.isMounted && (
-                <span style={{ color: '#666', fontSize: 10, marginLeft: 4 }}>
-                  unmounted
-                </span>
+                <span style={{ color: '#666', fontSize: 10, marginLeft: 4 }}>unmounted</span>
               )}
             </TD>
             <TD align="right">{c.renderCount}</TD>
@@ -277,9 +277,7 @@ function InsightList({ insights }: { insights: Insight[] }) {
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
             <SeverityBadge severity={insight.severity} />
-            <span style={{ color: '#ccc', fontWeight: 500, fontSize: 12 }}>
-              {insight.title}
-            </span>
+            <span style={{ color: '#ccc', fontWeight: 500, fontSize: 12 }}>{insight.title}</span>
           </div>
           <p style={{ color: '#888', fontSize: 11, margin: '0 0 4px', lineHeight: 1.4 }}>
             {insight.description}
@@ -295,7 +293,15 @@ function InsightList({ insights }: { insights: Insight[] }) {
 
 // ── Small pieces ─────────────────────────────────────────────────
 
-function HeaderBtn({ label, title, onClick }: { label: string; title: string; onClick: () => void }) {
+function HeaderBtn({
+  label,
+  title,
+  onClick,
+}: {
+  label: string;
+  title: string;
+  onClick: () => void;
+}) {
   return (
     <button
       onClick={onClick}
@@ -321,7 +327,10 @@ function HeaderBtn({ label, title, onClick }: { label: string; title: string; on
 }
 
 function TabBtn({
-  label, active, onClick, badge,
+  label,
+  active,
+  onClick,
+  badge,
 }: {
   label: string;
   active: boolean;
@@ -345,15 +354,17 @@ function TabBtn({
     >
       {label}
       {badge && !active && (
-        <span style={{
-          display: 'inline-block',
-          width: 6,
-          height: 6,
-          borderRadius: '50%',
-          background: '#e8520e',
-          marginLeft: 4,
-          verticalAlign: 'middle',
-        }} />
+        <span
+          style={{
+            display: 'inline-block',
+            width: 6,
+            height: 6,
+            borderRadius: '50%',
+            background: '#e8520e',
+            marginLeft: 4,
+            verticalAlign: 'middle',
+          }}
+        />
       )}
     </button>
   );
@@ -373,13 +384,15 @@ function StatusDot({ data }: { data: ComponentPerfData }) {
 
   return (
     <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-      <span style={{
-        width: 7,
-        height: 7,
-        borderRadius: '50%',
-        background: color,
-        display: 'inline-block',
-      }} />
+      <span
+        style={{
+          width: 7,
+          height: 7,
+          borderRadius: '50%',
+          background: color,
+          display: 'inline-block',
+        }}
+      />
       <span style={{ color: '#888', fontSize: 11 }}>{label}</span>
     </span>
   );
@@ -394,16 +407,18 @@ function SeverityBadge({ severity }: { severity: InsightSeverity }) {
   const c = colors[severity];
 
   return (
-    <span style={{
-      background: c.bg,
-      color: c.text,
-      borderRadius: 4,
-      padding: '1px 6px',
-      fontSize: 10,
-      fontWeight: 700,
-      textTransform: 'uppercase',
-      letterSpacing: 0.5,
-    }}>
+    <span
+      style={{
+        background: c.bg,
+        color: c.text,
+        borderRadius: 4,
+        padding: '1px 6px',
+        fontSize: 10,
+        fontWeight: 700,
+        textTransform: 'uppercase',
+        letterSpacing: 0.5,
+      }}
+    >
       {severity}
     </span>
   );
@@ -411,33 +426,29 @@ function SeverityBadge({ severity }: { severity: InsightSeverity }) {
 
 function TH({ children, align }: { children: React.ReactNode; align?: 'left' | 'right' }) {
   return (
-    <th style={{
-      padding: '6px 14px',
-      textAlign: align ?? 'left',
-      color: '#555',
-      fontSize: 10,
-      fontWeight: 500,
-      textTransform: 'uppercase',
-      letterSpacing: 0.5,
-    }}>
+    <th
+      style={{
+        padding: '6px 14px',
+        textAlign: align ?? 'left',
+        color: '#555',
+        fontSize: 10,
+        fontWeight: 500,
+        textTransform: 'uppercase',
+        letterSpacing: 0.5,
+      }}
+    >
       {children}
     </th>
   );
 }
 
 function TD({ children, align }: { children: React.ReactNode; align?: 'left' | 'right' }) {
-  return (
-    <td style={{ padding: '5px 14px', textAlign: align ?? 'left' }}>
-      {children}
-    </td>
-  );
+  return <td style={{ padding: '5px 14px', textAlign: align ?? 'left' }}>{children}</td>;
 }
 
 function Empty({ text }: { text: string }) {
   return (
-    <p style={{ color: '#555', textAlign: 'center', padding: '24px 16px', margin: 0 }}>
-      {text}
-    </p>
+    <p style={{ color: '#555', textAlign: 'center', padding: '24px 16px', margin: 0 }}>{text}</p>
   );
 }
 

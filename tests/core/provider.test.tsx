@@ -6,9 +6,7 @@ import { PerfLensProvider, PerfLensContext } from '../../src/core/provider';
 describe('PerfLensProvider', () => {
   it('renders children', () => {
     const { getByText } = render(
-      createElement(PerfLensProvider, null,
-        createElement('div', null, 'hello'),
-      ),
+      createElement(PerfLensProvider, null, createElement('div', null, 'hello')),
     );
 
     expect(getByText('hello')).toBeDefined();
@@ -22,11 +20,7 @@ describe('PerfLensProvider', () => {
       return null;
     }
 
-    render(
-      createElement(PerfLensProvider, null,
-        createElement(ContextSpy),
-      ),
-    );
+    render(createElement(PerfLensProvider, null, createElement(ContextSpy)));
 
     expect(ctxValue).not.toBeNull();
     expect(ctxValue).toHaveProperty('store');
@@ -41,11 +35,7 @@ describe('PerfLensProvider', () => {
       return null;
     }
 
-    render(
-      createElement(PerfLensProvider, { enabled: false },
-        createElement(ContextSpy),
-      ),
-    );
+    render(createElement(PerfLensProvider, { enabled: false }, createElement(ContextSpy)));
 
     expect(ctxValue).toBeNull();
   });
@@ -59,9 +49,7 @@ describe('PerfLensProvider', () => {
     }
 
     render(
-      createElement(PerfLensProvider, { config: { enabled: false } },
-        createElement(ContextSpy),
-      ),
+      createElement(PerfLensProvider, { config: { enabled: false } }, createElement(ContextSpy)),
     );
 
     expect(ctxValue).toBeNull();
@@ -76,10 +64,12 @@ describe('PerfLensProvider', () => {
     }
 
     render(
-      createElement(PerfLensProvider, {
-        enabled: false,
-        config: { enabled: true },
-      },
+      createElement(
+        PerfLensProvider,
+        {
+          enabled: false,
+          config: { enabled: true },
+        },
         createElement(ContextSpy),
       ),
     );
@@ -98,9 +88,11 @@ describe('PerfLensProvider', () => {
     }
 
     render(
-      createElement(PerfLensProvider, {
-        config: { thresholds: { slowRenderMs: 32 } },
-      },
+      createElement(
+        PerfLensProvider,
+        {
+          config: { thresholds: { slowRenderMs: 32 } },
+        },
         createElement(ConfigSpy),
       ),
     );

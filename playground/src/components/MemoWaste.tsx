@@ -12,12 +12,14 @@ export function MemoWaste() {
   }, []);
 
   return (
-    <div style={{
-      border: '2px solid #16a34a',
-      borderRadius: 8,
-      padding: 16,
-      minWidth: 200,
-    }}>
+    <div
+      style={{
+        border: '2px solid #16a34a',
+        borderRadius: 8,
+        padding: 16,
+        minWidth: 200,
+      }}
+    >
       <h3 style={{ margin: '0 0 8px', color: '#16a34a' }}>Memo Waste</h3>
       <p>Parent renders: {count}</p>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
@@ -27,9 +29,7 @@ export function MemoWaste() {
         <MemoizedLabel text="Static label D" />
         <MemoizedLabel text="Static label E" />
       </div>
-      <p style={{ fontSize: 12, color: '#999' }}>
-        React.memo on trivial components — savings ≈ 0%
-      </p>
+      <p style={{ fontSize: 12, color: '#999' }}>React.memo on trivial components — savings ≈ 0%</p>
     </div>
   );
 }
@@ -38,12 +38,14 @@ export function MemoWaste() {
 // memo overhead (prop comparison) exceeds render cost
 const MemoizedLabel = memo(function MemoizedLabel({ text }: { text: string }) {
   return (
-    <span style={{
-      background: '#f0fdf4',
-      padding: '2px 8px',
-      borderRadius: 4,
-      fontSize: 13,
-    }}>
+    <span
+      style={{
+        background: '#f0fdf4',
+        padding: '2px 8px',
+        borderRadius: 4,
+        fontSize: 13,
+      }}
+    >
       {text}
     </span>
   );

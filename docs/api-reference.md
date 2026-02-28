@@ -4,13 +4,13 @@ Quick reference for all public exports. See [README](../README.md) for setup, [r
 
 ## Exports
 
-| Export | Type | Since |
-|--------|------|-------|
-| `PerfLensProvider` | Component | v0.1.0 |
-| `PerfLensTrack` | Component | v0.1.0 |
-| `useRenderTracker` | Hook | v0.1.0 |
-| `usePerfLensStore` | Hook | v0.1.0 |
-| `PerfLensPanel` | Component | v0.2.0 (stub) |
+| Export             | Type      | Since         |
+| ------------------ | --------- | ------------- |
+| `PerfLensProvider` | Component | v0.1.0        |
+| `PerfLensTrack`    | Component | v0.1.0        |
+| `useRenderTracker` | Hook      | v0.1.0        |
+| `usePerfLensStore` | Hook      | v0.1.0        |
+| `PerfLensPanel`    | Component | v0.2.0 (stub) |
 
 ## Types
 
@@ -28,16 +28,16 @@ import type {
   PerfLensStore,
   PerfLensSnapshot,
   UseRenderTrackerOptions,
-} from 'perflens';
+} from 'react-perflens';
 ```
 
 ## Insight Types
 
-| Type | Implemented | Rule |
-|------|-------------|------|
-| `slow-render` | ✅ | Avg render > 16ms |
-| `excessive-rerenders` | ✅ | 20+ renders in 10s |
-| `rapid-mount-unmount` | ✅ | 5+ mount cycles in 5s |
-| `wasted-memo` | ✅ | Memo saves < 10% |
-| `unnecessary-rerender` | — | Needs prop capture (v0.3.0) |
-| `render-cascade` | — | Needs cross-component timing (v0.3.0) |
+| Type                   | Implemented | Rule                                  |
+| ---------------------- | ----------- | ------------------------------------- |
+| `slow-render`          | ✅          | Avg render > 16ms                     |
+| `excessive-rerenders`  | ✅          | 20+ renders in 10s                    |
+| `rapid-mount-unmount`  | ✅          | 5+ mount cycles in 5s                 |
+| `wasted-memo`          | ✅          | Memo saves < 10%                      |
+| `unnecessary-rerender` | —           | Needs prop capture (v0.3.0)           |
+| `render-cascade`       | —           | Needs cross-component timing (v0.3.0) |

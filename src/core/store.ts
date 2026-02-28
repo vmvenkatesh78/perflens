@@ -76,9 +76,7 @@ export class PerfStore {
   snapshot(): PerfLensSnapshot {
     const components = Array.from(this.components.values()).map((entry) => ({
       ...entry,
-      recentRenders: (
-        entry.recentRenders as unknown as CircularBuffer<RenderEvent>
-      ).toArray(),
+      recentRenders: (entry.recentRenders as unknown as CircularBuffer<RenderEvent>).toArray(),
     }));
 
     return {

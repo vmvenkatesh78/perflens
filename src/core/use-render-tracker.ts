@@ -12,10 +12,7 @@ import { usePerfLensContext } from './provider';
  * @param componentName - Label shown in the panel.
  * @param options - Per-component overrides.
  */
-export function useRenderTracker(
-  componentName: string,
-  options?: UseRenderTrackerOptions,
-): void {
+export function useRenderTracker(componentName: string, options?: UseRenderTrackerOptions): void {
   const { store } = usePerfLensContext();
   const renderCountRef = useRef(0);
 
@@ -53,7 +50,9 @@ export function useRenderTracker(
       if (prevProps !== null) {
         const entry = store.components.get(componentName);
         if (entry) {
-          const buffer = entry.recentRenders as unknown as { toArray: () => Array<{ propsChanged: boolean | null }> };
+          const buffer = entry.recentRenders as unknown as {
+            toArray: () => Array<{ propsChanged: boolean | null }>;
+          };
           const recent = buffer.toArray();
           const last = recent[recent.length - 1];
           if (last) {
@@ -82,10 +81,7 @@ export function useRenderTracker(
 }
 
 /** Same check React.memo uses internally. Compares own enumerable keys only. */
-export function shallowEqual(
-  a: Record<string, unknown>,
-  b: Record<string, unknown>,
-): boolean {
+export function shallowEqual(a: Record<string, unknown>, b: Record<string, unknown>): boolean {
   const keysA = Object.keys(a);
   const keysB = Object.keys(b);
 

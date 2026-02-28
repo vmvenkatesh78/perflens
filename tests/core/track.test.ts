@@ -19,10 +19,10 @@ describe('PerfLensTrack', () => {
     }
 
     render(
-      createElement(TestApp, null,
-        createElement(PerfLensTrack, { name: 'Tracked' },
-          createElement('div', null, 'child'),
-        ),
+      createElement(
+        TestApp,
+        null,
+        createElement(PerfLensTrack, { name: 'Tracked' }, createElement('div', null, 'child')),
         createElement(StoreReader),
       ),
     );
@@ -43,10 +43,10 @@ describe('PerfLensTrack', () => {
     }
 
     render(
-      createElement(TestApp, null,
-        createElement(PerfLensTrack, { name: 'MountTest' },
-          createElement('div'),
-        ),
+      createElement(
+        TestApp,
+        null,
+        createElement(PerfLensTrack, { name: 'MountTest' }, createElement('div')),
         createElement(StoreReader),
       ),
     );
@@ -70,14 +70,16 @@ describe('PerfLensTrack', () => {
         'div',
         null,
         show
-          ? createElement(PerfLensTrack, { name: 'Removable' },
-              createElement('div', null, 'here'),
-            )
+          ? createElement(PerfLensTrack, { name: 'Removable' }, createElement('div', null, 'here'))
           : null,
-        createElement('button', {
-          'data-testid': 'toggle',
-          onClick: () => setShow(false),
-        }, 'hide'),
+        createElement(
+          'button',
+          {
+            'data-testid': 'toggle',
+            onClick: () => setShow(false),
+          },
+          'hide',
+        ),
         createElement(StoreReader),
       );
     }
@@ -104,10 +106,10 @@ describe('PerfLensTrack', () => {
     }
 
     render(
-      createElement(TestApp, null,
-        createElement(PerfLensTrack, { name: 'CustomName' },
-          createElement('span'),
-        ),
+      createElement(
+        TestApp,
+        null,
+        createElement(PerfLensTrack, { name: 'CustomName' }, createElement('span')),
         createElement(StoreReader),
       ),
     );

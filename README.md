@@ -5,14 +5,14 @@ React performance toolkit. Track renders, surface insights, fix bottlenecks.
 ## Install
 
 ```bash
-npm install perflens
+npm install react-perflens
 ```
 
 ## Quick Start
 
 ```tsx
-import { PerfLensProvider, PerfLensTrack, useRenderTracker } from 'perflens';
-import { PerfLensPanel } from 'perflens/panel';
+import { PerfLensProvider, PerfLensTrack, useRenderTracker } from 'react-perflens';
+import { PerfLensPanel } from 'react-perflens/panel';
 
 function App() {
   return (
@@ -35,7 +35,13 @@ function Dashboard() {
 // option 2: hook — gives you render count + mount/unmount tracking
 function UserList({ users }) {
   useRenderTracker('UserList');
-  return <ul>{users.map(u => <li key={u.id}>{u.name}</li>)}</ul>;
+  return (
+    <ul>
+      {users.map((u) => (
+        <li key={u.id}>{u.name}</li>
+      ))}
+    </ul>
+  );
 }
 ```
 
@@ -51,10 +57,10 @@ perflens tracks render count and duration per component, unnecessary re-renders,
 
 ### `<PerfLensProvider>`
 
-| Prop | Type | Default |
-|------|------|---------|
-| `enabled` | `boolean` | `true` |
-| `config` | `PerfLensConfig` | — |
+| Prop      | Type             | Default |
+| --------- | ---------------- | ------- |
+| `enabled` | `boolean`        | `true`  |
+| `config`  | `PerfLensConfig` | —       |
 
 When `enabled` is `false`, renders children with zero overhead.
 
@@ -66,12 +72,12 @@ Wraps a subtree with its own React Profiler. This is how you get per-component t
 
 Hook for render counting and mount/unmount tracking. No timing data (React Profiler is a component, not a hook).
 
-| Option | Type | Default |
-|--------|------|---------|
-| `trackProps` | `boolean` | `false` |
-| `warnAfterRenders` | `number` | `20` |
-| `slowThreshold` | `number` | `16` |
-| `ignore` | `boolean` | `false` |
+| Option             | Type      | Default |
+| ------------------ | --------- | ------- |
+| `trackProps`       | `boolean` | `false` |
+| `warnAfterRenders` | `number`  | `20`    |
+| `slowThreshold`    | `number`  | `16`    |
+| `ignore`           | `boolean` | `false` |
 
 ### `usePerfLensStore()`
 
@@ -79,10 +85,10 @@ Returns the store directly. Build custom UIs or pipe data externally.
 
 ### `<PerfLensPanel />`
 
-Floating overlay. Toggle with `Ctrl+Shift+P`. Import from `perflens/panel` — separated so the UI code doesn't bloat your core bundle.
+Floating overlay. Toggle with `Ctrl+Shift+P`. Import from `react-perflens/panel` — separated so the UI code doesn't bloat your core bundle.
 
 ```tsx
-import { PerfLensPanel } from 'perflens/panel';
+import { PerfLensPanel } from 'react-perflens/panel';
 ```
 
 ## Constraints

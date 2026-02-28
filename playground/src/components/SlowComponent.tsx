@@ -12,12 +12,14 @@ export function SlowComponent() {
   }
 
   return (
-    <div style={{
-      border: '2px solid #ca8a04',
-      borderRadius: 8,
-      padding: 16,
-      minWidth: 200,
-    }}>
+    <div
+      style={{
+        border: '2px solid #ca8a04',
+        borderRadius: 8,
+        padding: 16,
+        minWidth: 200,
+      }}
+    >
       <h3 style={{ margin: '0 0 8px', color: '#ca8a04' }}>Slow Component</h3>
       <p>Renders: {count}</p>
       <button onClick={() => setCount((c) => c + 1)}>re-render (30ms block)</button>

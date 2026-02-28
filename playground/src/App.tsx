@@ -34,8 +34,8 @@ export function App() {
       <div style={{ fontFamily: 'system-ui', maxWidth: 900, margin: '0 auto', padding: 24 }}>
         <h1 style={{ fontSize: 24, marginBottom: 4 }}>perflens playground</h1>
         <p style={{ color: '#666', marginBottom: 24 }}>
-          Each button activates a component with a specific perf anti-pattern.
-          Use the debug panel below to see what perflens is tracking.
+          Each button activates a component with a specific perf anti-pattern. Use the debug panel
+          below to see what perflens is tracking.
         </p>
 
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 24 }}>
@@ -54,9 +54,7 @@ export function App() {
               }}
             >
               {s.label}
-              <span style={{ display: 'block', fontSize: 11, opacity: 0.7 }}>
-                {s.insight}
-              </span>
+              <span style={{ display: 'block', fontSize: 11, opacity: 0.7 }}>{s.insight}</span>
             </button>
           ))}
         </div>

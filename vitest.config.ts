@@ -12,7 +12,7 @@ export default defineConfig({
         'src/**/index.ts',
         'src/types.ts',
         'src/analyzer/**', // stubs — covered when implemented in v0.3.0
-        'src/panel/**',    // stub — covered when implemented in v0.2.0
+        'src/panel/**', // stub — covered when implemented in v0.2.0
       ],
       thresholds: {
         statements: 90,
