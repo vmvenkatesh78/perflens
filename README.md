@@ -3,13 +3,6 @@
 React performance toolkit. Track renders, surface insights, fix bottlenecks.
 
 > **Status:** Pre-release. Core hooks and store are functional. Panel and insights in upcoming versions.
-
-## Install
-
-```bash
-npm install perflens
-```
-
 ## Quick Start
 
 ```tsx
