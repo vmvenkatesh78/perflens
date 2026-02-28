@@ -5,11 +5,9 @@ import path from 'path';
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    alias: {
-      // resolve perflens to the source, not the built dist
-      // so changes in src/ reflect instantly with HMR
-      perflens: path.resolve(__dirname, '../src/index.ts'),
-      'perflens/panel': path.resolve(__dirname, '../src/panel/index.ts'),
-    },
+    alias: [
+      { find: 'perflens/panel', replacement: path.resolve(__dirname, '../src/panel/index.ts') },
+      { find: 'perflens', replacement: path.resolve(__dirname, '../src/index.ts') },
+    ],
   },
 });
