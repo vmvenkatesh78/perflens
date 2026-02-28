@@ -9,6 +9,7 @@ export default defineConfig({
       // resolve perflens to the source, not the built dist
       // so changes in src/ reflect instantly with HMR
       perflens: path.resolve(__dirname, '../src/index.ts'),
+      'perflens/panel': path.resolve(__dirname, '../src/panel/index.ts'),
     },
   },
 });

@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { PerfLensProvider, PerfLensTrack } from 'perflens';
+import { PerfLensPanel } from 'perflens/panel';
 import { RenderSpammer } from './components/RenderSpammer';
 import { SlowComponent } from './components/SlowComponent';
 import { UnstableProps } from './components/UnstableProps';
 import { CascadeParent } from './components/CascadeParent';
 import { MountFlicker } from './components/MountFlicker';
 import { MemoWaste } from './components/MemoWaste';
-import { PerfDebug } from './components/PerfDebug';
 
 const SCENARIOS = [
   { id: 'spammer', label: 'Render Spammer', insight: 'excessive-rerenders' },
@@ -94,7 +94,7 @@ export function App() {
           )}
         </div>
 
-        <PerfDebug />
+        <PerfLensPanel />
       </div>
     </PerfLensProvider>
   );
