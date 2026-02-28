@@ -1,10 +1,43 @@
 import type { ComponentPerfData, Insight, PerfLensThresholds } from '../types';
+import { bySeverity } from './utils';
+import * as slowRender from './rules/slow-render';
 
-/** Runs all insight rules against current store data. Called on a timer, not per render. */
+// all active rules — add new ones here as they're implemented
+const rules = [
+  slowRender,
+];
+
+/**
+ * Sweeps every tracked component through every active rule.
+ * Called on a timer from the provider, not on every render.
+ *
+ * Returns a deduplicated, severity-sorted list of insights.
+ * Dedup key is insight.id (type::componentName), so a component
+ * only gets one insight per rule — the latest one wins.
+ */
 export function runAnalyzer(
-  _components: Map<string, ComponentPerfData>,
-  _thresholds: PerfLensThresholds,
+  components: Map<string, ComponentPerfData>,
+  thresholds: PerfLensThresholds,
 ): Insight[] {
-  // TODO(v0.3.0): wire up rules
-  return [];
+  const seen = new Map<string, Insight>();
+
+  for (const [name, data] of components) {
+    for (const rule of rules) {
+      try {
+        const hits = rule.check(name, data, thresholds);
+        for (const insight of hits) {
+          // latest insight for a given id wins — data might have changed
+          // since the last sweep
+          seen.set(insight.id, insight);
+        }
+      } catch (_err) {
+        // one bad rule shouldn't take down the whole analyzer
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn(`[perflens] analyzer rule failed for <${name}>:`, _err);
+        }
+      }
+    }
+  }
+
+  return Array.from(seen.values()).sort(bySeverity);
 }
