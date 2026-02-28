@@ -1,9 +1,10 @@
-import { createContext, useContext, useMemo, useRef, Profiler } from 'react';
+import { createContext, useContext, useMemo, useRef, useEffect, Profiler } from 'react';
 import type { ReactNode } from 'react';
 import type { PerfLensConfig, PerfLensThresholds, Insight } from '../types';
 import { PerfStore } from './store';
 import { DEFAULT_CONFIG, DEFAULT_THRESHOLDS } from '../constants';
 import { createProfilerCallback } from './profiler-callback';
+import { runAnalyzer } from '../analyzer/engine';
 
 // Context
 
@@ -80,6 +81,36 @@ function PerfLensProviderInner({
     }),
     [resolvedConfig],
   );
+
+  // run the analyzer on a timer — sweeps all tracked components for issues.
+  // writes directly to store.insights (mutable), no React state involved.
+  useEffect(() => {
+    const id = setInterval(() => {
+      const store = storeRef.current;
+      if (!store || store.components.size === 0) return;
+
+      const newInsights = runAnalyzer(store.components, resolvedConfig.thresholds);
+
+      // figure out which insights are genuinely new (not seen before)
+      const previousIds = new Set(store.insights.map((i) => i.id));
+      const fresh = newInsights.filter((i) => !previousIds.has(i.id));
+
+      store.insights = newInsights;
+
+      // fire the callback for each new insight — useful for piping to analytics
+      if (resolvedConfig.onInsight && fresh.length > 0) {
+        for (const insight of fresh) {
+          try {
+            resolvedConfig.onInsight(insight);
+          } catch (_err) {
+            // consumer's callback, not our problem if it throws
+          }
+        }
+      }
+    }, resolvedConfig.analyzerInterval);
+
+    return () => clearInterval(id);
+  }, [resolvedConfig]);
 
   return (
     <PerfLensContext.Provider value={contextValue}>
