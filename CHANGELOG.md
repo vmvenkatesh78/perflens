@@ -2,23 +2,34 @@
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-02-28
+
+First npm publish. Core tracking, 4 analyzer rules, and floating panel.
+
 ### Added
-- Analyzer engine — sweeps tracked components on a 2s interval, produces insights
+- `PerfLensPanel` — floating overlay with component table and insight list
+  - Keyboard toggle (Ctrl+Shift+P, configurable)
+  - Collapsible pill mode with insight count badge
+  - Tabs for components and insights
+  - Export snapshot to JSON, clear data
+  - Configurable corner position
+- Panel ships as separate entry point (`perflens/panel`) to keep core bundle lean
+- Analyzer engine — sweeps tracked components on a 2s interval
 - `slow-render` rule — flags components over the 16ms frame budget
 - `excessive-rerenders` rule — counts renders in a sliding time window
 - `rapid-mount-unmount` rule — catches destroy-recreate loops
 - `wasted-memo` rule — detects memoization that isn't saving enough
-- `onInsight` callback fires for each new insight (pipe to analytics, logging, etc.)
-- 30 new analyzer tests (96 total across 12 test files)
+- `onInsight` callback for piping insights to analytics or logging
+- 96 tests across 12 test files
 
 ### Changed
-- `useRenderTracker` no longer calls `recordRender` — Profiler handles all timing
-- Removed `profiledRenderCount` from `ComponentPerfData` (unnecessary split)
-- Prop change detection wired into `useRenderTracker` (was a no-op before)
+- `PerfLensPanel` moved from `perflens` to `perflens/panel` import path
+- `useRenderTracker` simplified — Profiler handles timing, hook handles counting
+- Removed `profiledRenderCount` from `ComponentPerfData`
 
-### Improved
-- Human-readable JSDoc across all public APIs
-- Rewrote `docs/insights.md` with practical fix guidance for each rule
+### Bundle size
+- Core: 3.73 KB gzipped
+- Full (with panel): 7.96 KB gzipped
 
 ## [0.1.0] - 2026-02-22
 
@@ -27,12 +38,10 @@
 - `PerfLensTrack` — per-component Profiler wrapper for timing data
 - `useRenderTracker` — hook for render counting, mount/unmount tracking
 - `usePerfLensStore` — read store data programmatically
-- `PerfLensPanel` — stub (ships in v0.2.0)
 - Mutable Map-based store with circular buffer per component
 - Component eviction when at capacity (LRU by last render time)
 - Serializable snapshots for JSON export
 - Playground app with 6 anti-pattern test components
-- 51 tests across 7 test files
 - CI pipeline (lint, typecheck, test, build, size check)
 - Full TypeScript strict mode, zero `any`
 
@@ -40,4 +49,3 @@
 - Mutable store over Redux/Zustand — avoids GC pressure at high write rates
 - Circular buffer over arrays — bounded memory per component
 - Interval-based panel reads over reactive updates — decouples write/render frequency
-- `PerfLensTrack` wraps with Profiler for real timing data
