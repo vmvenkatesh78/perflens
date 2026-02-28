@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { runAnalyzer } from '../../src/analyzer/engine';
-import type { ComponentPerfData, PerfLensThresholds } from '../../src/types';
+import type { ComponentPerfData } from '../../src/types';
 import { DEFAULT_THRESHOLDS } from '../../src/constants';
 
 function makeComponent(

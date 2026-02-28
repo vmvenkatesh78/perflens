@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-02-28
+
+Patch release — npm package name fix and documentation corrections.
+
+### Fixed
+- Package renamed to `react-perflens` on npm (`perflens` was blocked by registry)
+- README install command and import paths now reference `react-perflens`
+- Package name in package.json synced with npm registry
+
 ## [0.2.0] - 2026-02-28
 
 First npm publish. Core tracking, 4 analyzer rules, and floating panel.

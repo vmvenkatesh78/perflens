@@ -28,7 +28,7 @@ import type {
   PerfLensStore,
   PerfLensSnapshot,
   UseRenderTrackerOptions,
-} from 'perflens';
+} from 'react-perflens';
 ```
 
 ## Insight Types

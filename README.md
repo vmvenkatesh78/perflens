@@ -5,14 +5,14 @@ React performance toolkit. Track renders, surface insights, fix bottlenecks.
 ## Install
 
 ```bash
-npm install perflens
+npm install react-perflens
 ```
 
 ## Quick Start
 
 ```tsx
-import { PerfLensProvider, PerfLensTrack, useRenderTracker } from 'perflens';
-import { PerfLensPanel } from 'perflens/panel';
+import { PerfLensProvider, PerfLensTrack, useRenderTracker } from 'react-perflens';
+import { PerfLensPanel } from 'react-perflens/panel';
 
 function App() {
   return (
@@ -79,10 +79,10 @@ Returns the store directly. Build custom UIs or pipe data externally.
 
 ### `<PerfLensPanel />`
 
-Floating overlay. Toggle with `Ctrl+Shift+P`. Import from `perflens/panel` — separated so the UI code doesn't bloat your core bundle.
+Floating overlay. Toggle with `Ctrl+Shift+P`. Import from `react-perflens/panel` — separated so the UI code doesn't bloat your core bundle.
 
 ```tsx
-import { PerfLensPanel } from 'perflens/panel';
+import { PerfLensPanel } from 'react-perflens/panel';
 ```
 
 ## Constraints
