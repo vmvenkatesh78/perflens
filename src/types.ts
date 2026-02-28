@@ -1,43 +1,45 @@
 export type RenderPhase = 'mount' | 'update';
 
+/**
+ * Single render event captured by React's Profiler.
+ * Durations are in ms, timestamps from performance.now().
+ */
 export interface RenderEvent {
-  /** High-res timestamp from performance.now(). */
   timestamp: number;
   phase: RenderPhase;
-  /** Time React spent rendering this subtree (ms). From Profiler. */
+  /** ms spent rendering this subtree. Straight from Profiler. */
   actualDuration: number;
-  /** Estimated time to render without memoization (ms). From Profiler. */
+  /** Estimated cost without memoization (ms). Useful for wasted-memo detection. */
   baseDuration: number;
-  /** When React began this render pass. */
   startTime: number;
-  /** When React committed changes to the DOM. */
   commitTime: number;
-  /** Whether props changed since last render. null when trackProps is off. */
+  /** null until trackProps is enabled on the component. */
   propsChanged: boolean | null;
 }
 
+/**
+ * Accumulated perf data for a single tracked component.
+ * Updated on every render — read by the panel on a polling interval.
+ */
 export interface ComponentPerfData {
   name: string;
   renderCount: number;
   mountCount: number;
   updateCount: number;
-  /** Most recent actualDuration. 0 if only tracked via useRenderTracker. */
   lastDuration: number;
-  /** Running average of actualDuration across profiled renders. */
+  /** Running average across all profiled renders. */
   avgDuration: number;
   maxDuration: number;
   totalDuration: number;
   lastBaseDuration: number;
-  /** Renders with Profiler timing data. Excludes hook-only (useRenderTracker) renders. */
-  profiledRenderCount: number;
   firstRenderAt: number;
   lastRenderAt: number;
-  /** Ring buffer of recent render events. Bounded by maxRenderEvents. */
+  /** Bounded ring buffer — oldest entries get overwritten. See CircularBuffer. */
   recentRenders: RenderEvent[];
-  /** Shallow copy of previous props for change detection. */
+  /** Shallow copy of previous props, for change detection between renders. */
   prevProps: Record<string, unknown> | null;
   isMounted: boolean;
-  /** How many times this component has been mounted then unmounted. */
+  /** Tracks destroy-and-recreate patterns (key prop abuse, conditional rendering). */
   mountUnmountCycles: number;
 }
 
@@ -53,23 +55,27 @@ export type InsightType =
   | 'wasted-memo'
   | 'rapid-mount-unmount';
 
+/**
+ * A performance issue detected by the analyzer.
+ * Each insight maps to exactly one component and one rule.
+ */
 export interface Insight {
   id: string;
   type: InsightType;
   severity: InsightSeverity;
   componentName: string;
-  /** What happened. */
+  /** What happened, e.g. "UserList rendered 47 times in 10s" */
   title: string;
   /** Why it matters. */
   description: string;
-  /** What to do about it. */
+  /** Actionable fix. */
   suggestion: string;
   data: InsightData;
   createdAt: number;
   dismissed: boolean;
 }
 
-/** Discriminated union. Switch on `type` to narrow the payload. */
+/** Switch on `type` to narrow the payload — standard discriminated union pattern. */
 export type InsightData =
   | {
       type: 'excessive-rerenders';
@@ -118,46 +124,44 @@ export interface PerfLensConfig {
   /** Keyboard shortcut to toggle the panel. Default: 'ctrl+shift+p' */
   toggleKey?: string;
   thresholds?: Partial<PerfLensThresholds>;
-  /** Max components before LRU eviction kicks in. Default: 200 */
+  /** Cap on tracked components before LRU eviction kicks in. */
   maxTrackedComponents?: number;
-  /** Ring buffer size per component. Default: 100 */
+  /** Ring buffer size per component. Older render events get overwritten. */
   maxRenderEvents?: number;
-  /** How often the analyzer runs (ms). Default: 2000 */
+  /** How often the analyzer sweeps for issues (ms). */
   analyzerInterval?: number;
-  /** Fires each time a new insight is generated. */
+  /** Fires every time a new insight is created. Hook this up to your analytics. */
   onInsight?: (insight: Insight) => void;
 }
 
 export interface PerfLensThresholds {
   /** Renders in window before flagging. Default: 20 */
   excessiveRenderCount: number;
-  /** Time window for excessive render counting (ms). Default: 10000 */
+  /** Time window for counting (ms). Default: 10000 */
   excessiveRenderWindow: number;
-  /** Render duration that counts as slow (ms). Default: 16 (one frame @ 60fps) */
+  /** One frame at 60fps = 16ms. Anything over this is slow. */
   slowRenderMs: number;
-  /** Minimum memo savings % to be considered worth keeping. Default: 10 */
+  /** Below this %, memo overhead isn't worth it. Default: 10 */
   memoSavingsThreshold: number;
-  /** Mount/unmount cycles before flagging. Default: 5 */
   rapidMountCycles: number;
-  /** Time window for rapid mount detection (ms). Default: 5000 */
   rapidMountWindow: number;
-  /** Min children in a commit to flag a cascade. Default: 5 */
   cascadeChildThreshold: number;
 }
 
 export interface UseRenderTrackerOptions {
-  /** Shallow-compare props between renders. Default: false */
+  /** Enable shallow prop comparison between renders. Off by default — has a cost. */
   trackProps?: boolean;
-  /** Override the excessive render threshold for this component. */
+  /** Override the excessive render threshold for this specific component. */
   warnAfterRenders?: number;
-  /** Override the slow render threshold (ms) for this component. */
+  /** Override slow render threshold (ms) for this specific component. */
   slowThreshold?: number;
-  /** Skip tracking entirely. Handy for components you expect to render often. */
+  /** Skip tracking entirely. Useful for components you expect to be noisy. */
   ignore?: boolean;
 }
 
 // Store
 
+/** Public store interface exposed via usePerfLensStore(). */
 export interface PerfLensStore {
   components: Map<string, ComponentPerfData>;
   insights: Insight[];
@@ -165,11 +169,11 @@ export interface PerfLensStore {
   startedAt: number;
   totalRenders: number;
   clear: () => void;
-  /** Serializable snapshot of the store. Safe to JSON.stringify or postMessage. */
+  /** Returns a JSON-safe copy of everything. Safe to postMessage or stringify. */
   snapshot: () => PerfLensSnapshot;
 }
 
-/** Serializable store snapshot. Map flattened to array for JSON/postMessage. */
+/** Flat, serializable version of the store. Map → array so JSON.stringify works. */
 export interface PerfLensSnapshot {
   components: ComponentPerfData[];
   insights: Insight[];

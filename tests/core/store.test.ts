@@ -136,28 +136,4 @@ describe('PerfStore', () => {
   it('returns null for props on unknown component', () => {
     expect(store.getPrevProps('Ghost')).toBeNull();
   });
-
-  it('skips duration updates for hook-level renders (actualDuration = -1)', () => {
-    // PerfLensTrack render with real timing
-    store.recordRender('Btn', makeEvent({ phase: 'mount', actualDuration: 5, baseDuration: 10 }));
-
-    // useRenderTracker render — no Profiler data
-    store.recordRender('Btn', makeEvent({ actualDuration: -1, baseDuration: -1 }));
-
-    const entry = store.components.get('Btn')!;
-    expect(entry.renderCount).toBe(2); // counted
-    expect(entry.avgDuration).toBe(5); // not corrupted by -1
-    expect(entry.maxDuration).toBe(5);
-    expect(entry.lastDuration).toBe(5); // unchanged
-  });
-
-  it('works with hook-only tracking (no Profiler data at all)', () => {
-    store.recordRender('HookOnly', makeEvent({ phase: 'mount', actualDuration: -1, baseDuration: -1 }));
-    store.recordRender('HookOnly', makeEvent({ actualDuration: -1, baseDuration: -1 }));
-
-    const entry = store.components.get('HookOnly')!;
-    expect(entry.renderCount).toBe(2);
-    expect(entry.avgDuration).toBe(0); // no real data yet
-    expect(entry.maxDuration).toBe(0);
-  });
 });

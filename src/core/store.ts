@@ -27,19 +27,14 @@ export class PerfStore {
     }
 
     entry.renderCount++;
+    entry.totalDuration += event.actualDuration;
+    entry.avgDuration = entry.totalDuration / entry.renderCount;
+    entry.lastDuration = event.actualDuration;
+    entry.lastBaseDuration = event.baseDuration;
     entry.lastRenderAt = event.timestamp;
 
-    // -1 means no Profiler data (hook-level tracking only). skip duration math.
-    if (event.actualDuration >= 0) {
-      entry.profiledRenderCount++;
-      entry.totalDuration += event.actualDuration;
-      entry.avgDuration = entry.totalDuration / entry.profiledRenderCount;
-      entry.lastDuration = event.actualDuration;
-      entry.lastBaseDuration = event.baseDuration;
-
-      if (event.actualDuration > entry.maxDuration) {
-        entry.maxDuration = event.actualDuration;
-      }
+    if (event.actualDuration > entry.maxDuration) {
+      entry.maxDuration = event.actualDuration;
     }
 
     if (event.phase === 'mount') {
@@ -77,6 +72,7 @@ export class PerfStore {
     this.totalRenders = 0;
   }
 
+  /** Creates a JSON-safe copy. CircularBuffer gets flattened to a plain array. */
   snapshot(): PerfLensSnapshot {
     const components = Array.from(this.components.values()).map((entry) => ({
       ...entry,
@@ -97,6 +93,7 @@ export class PerfStore {
     };
   }
 
+  /** LRU eviction — drops the component that hasn't rendered in the longest time. */
   private evictIfNeeded(): void {
     if (this.components.size < this.maxComponents) return;
 
@@ -128,9 +125,10 @@ function createEntry(name: string, bufferSize: number): ComponentPerfData {
     maxDuration: 0,
     totalDuration: 0,
     lastBaseDuration: 0,
-    profiledRenderCount: 0,
     firstRenderAt: now,
     lastRenderAt: now,
+    // CircularBuffer at runtime, typed as RenderEvent[] in the public API.
+    // Consumers see a plain array (via snapshot), internally we get O(1) push.
     recentRenders: new CircularBuffer<RenderEvent>(bufferSize) as unknown as RenderEvent[],
     prevProps: null,
     isMounted: false,

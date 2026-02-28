@@ -4,22 +4,20 @@ import type { RenderPhase } from '../types';
 import { usePerfLensContext } from './provider';
 
 interface PerfLensTrackProps {
-  /** Label shown in the panel. Keep it stable across renders. */
+  /** Label shown in the panel. Keep it stable — changing this creates a new entry. */
   name: string;
   children: ReactNode;
 }
 
 /**
  * Wraps a subtree with its own Profiler for per-component timing.
- * useRenderTracker counts renders but can't measure duration — React
- * only exposes that through the Profiler component.
+ * useRenderTracker can count renders and detect prop changes, but
+ * only a Profiler gives you actual render duration.
  *
- * @param props.name - Identifier for this tracked subtree.
- *
- * @example
- * <PerfLensTrack name="FormBuilder">
- *   <FormBuilder />
- * </PerfLensTrack>
+ * Use from the parent:
+ *   <PerfLensTrack name="FormBuilder">
+ *     <FormBuilder />
+ *   </PerfLensTrack>
  */
 export function PerfLensTrack({ name, children }: PerfLensTrackProps) {
   const { store } = usePerfLensContext();
@@ -32,7 +30,7 @@ export function PerfLensTrack({ name, children }: PerfLensTrackProps) {
       try {
         store.recordUnmount(name);
       } catch (_) {
-        // never crash the host app
+        // never crash the host app — perflens is a dev tool, not critical path
       }
     };
   }, [store, name]);
@@ -46,6 +44,7 @@ export function PerfLensTrack({ name, children }: PerfLensTrackProps) {
     commitTime: number,
   ) => {
     try {
+      // React 19 added 'nested-update' — we just bucket it as 'update'
       const normalizedPhase: RenderPhase = phase === 'mount' ? 'mount' : 'update';
       store.recordRender(name, {
         timestamp: performance.now(),
@@ -57,7 +56,7 @@ export function PerfLensTrack({ name, children }: PerfLensTrackProps) {
         propsChanged: null,
       });
     } catch (_) {
-      // never crash the host app
+      // same deal — don't blow up the app for a perf tracking failure
     }
   };
 

@@ -5,6 +5,8 @@ import { PerfStore } from './store';
 import { DEFAULT_CONFIG, DEFAULT_THRESHOLDS } from '../constants';
 import { createProfilerCallback } from './profiler-callback';
 
+// Context
+
 interface PerfLensContextValue {
   store: PerfStore;
   config: ResolvedConfig;
@@ -24,6 +26,8 @@ export interface ResolvedConfig {
 
 export const PerfLensContext = createContext<PerfLensContextValue | null>(null);
 
+// Provider
+
 interface PerfLensProviderProps {
   children: ReactNode;
   config?: PerfLensConfig;
@@ -32,11 +36,8 @@ interface PerfLensProviderProps {
 }
 
 /**
- * Sets up the Profiler and perf store for the wrapped subtree.
+ * Wraps your app with a Profiler and perf store.
  * When disabled, renders children directly — no Profiler, no context, no store.
- *
- * @param props.enabled - Kill switch. Shorthand for `config.enabled`.
- * @param props.config - Full config. Merged with defaults.
  */
 export function PerfLensProvider({ children, config, enabled }: PerfLensProviderProps) {
   const isEnabled = enabled ?? config?.enabled ?? DEFAULT_CONFIG.enabled;
@@ -57,7 +58,8 @@ function PerfLensProviderInner({
 }) {
   const resolvedConfig = useMemo(() => resolveConfig(config), [config]);
 
-  // store lives in a ref, not state — we don't want React re-renders on every mutation
+  // store lives in a ref — mutations happen on every render callback,
+  // and we definitely don't want React re-rendering because of that
   const storeRef = useRef<PerfStore | null>(null);
   if (!storeRef.current) {
     storeRef.current = new PerfStore(
@@ -88,8 +90,9 @@ function PerfLensProviderInner({
   );
 }
 
-/** Grabs the perflens context. Throws if called outside the provider. */
-export function usePerfLensContext(): PerfLensContextValue {
+// Internal — other hooks grab context through this
+
+/** @throws if called outside PerfLensProvider */export function usePerfLensContext(): PerfLensContextValue {
   const ctx = useContext(PerfLensContext);
   if (!ctx) {
     throw new Error(
@@ -98,6 +101,8 @@ export function usePerfLensContext(): PerfLensContextValue {
   }
   return ctx;
 }
+
+// Config resolution
 
 function resolveConfig(config?: PerfLensConfig): ResolvedConfig {
   return {
