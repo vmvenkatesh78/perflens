@@ -48,7 +48,7 @@ function makeComponent(
     lastBaseDuration: 4,
     firstRenderAt: NOW - windowMs,
     lastRenderAt: NOW,
-    recentRenders: buffer as unknown as RenderEvent[],
+    recentRenders: buffer,
     prevProps: null,
     isMounted: true,
     mountUnmountCycles: 0,
@@ -101,7 +101,7 @@ describe('excessive-rerenders rule', () => {
     }
 
     const data = makeComponent(30, 10_000, {
-      recentRenders: buffer as unknown as RenderEvent[],
+      recentRenders: buffer,
     });
 
     // only 10 in window, threshold is 20 — should not flag
@@ -156,7 +156,7 @@ describe('excessive-rerenders rule', () => {
     }
 
     const data = makeComponent(6, 2_000, {
-      recentRenders: buffer as unknown as RenderEvent[],
+      recentRenders: buffer,
     });
 
     expect(check('Strict', data, strict, NOW)).toHaveLength(1);

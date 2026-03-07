@@ -1,5 +1,4 @@
-import type { ComponentPerfData, Insight, PerfLensThresholds, RenderEvent } from '../../types';
-import type { CircularBuffer } from '../../core/circular-buffer';
+import type { ComponentPerfData, Insight, PerfLensThresholds } from '../../types';
 import { insightId } from '../utils';
 
 /**
@@ -23,8 +22,7 @@ export function check(
   const windowStart = currentTime - thresholds.excessiveRenderWindow;
 
   // grab renders within the time window from the ring buffer
-  const buffer = data.recentRenders as unknown as CircularBuffer<RenderEvent>;
-  const recent = buffer.itemsSince(windowStart, (e) => e.timestamp);
+  const recent = data.recentRenders.itemsSince(windowStart, (e) => e.timestamp);
 
   if (recent.length < thresholds.excessiveRenderCount) return [];
 

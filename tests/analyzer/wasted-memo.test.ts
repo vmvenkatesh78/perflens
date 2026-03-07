@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { check } from '../../src/analyzer/rules/wasted-memo';
 import type { ComponentPerfData, PerfLensThresholds } from '../../src/types';
+import { CircularBuffer } from '../../src/core/circular-buffer';
 import { DEFAULT_THRESHOLDS } from '../../src/constants';
 
 function makeComponent(overrides: Partial<ComponentPerfData> = {}): ComponentPerfData {
@@ -16,7 +17,7 @@ function makeComponent(overrides: Partial<ComponentPerfData> = {}): ComponentPer
     lastBaseDuration: 10,
     firstRenderAt: 0,
     lastRenderAt: 100,
-    recentRenders: [],
+    recentRenders: new CircularBuffer(100),
     prevProps: null,
     isMounted: true,
     mountUnmountCycles: 0,

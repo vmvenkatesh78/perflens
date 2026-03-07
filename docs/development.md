@@ -4,10 +4,10 @@ How we work on perflens. Read this before opening a PR.
 
 ## Branches
 
-| Branch | Purpose |
-|--------|---------|
-| `main` | Stable, release-ready. Tags trigger npm publish. |
-| `dev` | Active development. All feature work lands here first. |
+| Branch      | Purpose                                                |
+| ----------- | ------------------------------------------------------ |
+| `main`      | Stable, release-ready. Tags trigger npm publish.       |
+| `dev`       | Active development. All feature work lands here first. |
 | `feature/*` | Larger features branch off `dev`, merge back to `dev`. |
 
 Day-to-day work goes into `dev`. When a release is ready, `dev` gets merged to `main` and tagged.

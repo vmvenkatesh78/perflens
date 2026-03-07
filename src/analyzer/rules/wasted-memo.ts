@@ -24,8 +24,7 @@ export function check(
   // need enough renders to spot a pattern, not just a single mount
   if (data.renderCount < 3) return [];
 
-  const savingsPercent =
-    ((data.lastBaseDuration - data.avgDuration) / data.lastBaseDuration) * 100;
+  const savingsPercent = ((data.lastBaseDuration - data.avgDuration) / data.lastBaseDuration) * 100;
 
   // positive savings above threshold = memo is doing its job
   if (savingsPercent >= thresholds.memoSavingsThreshold) return [];

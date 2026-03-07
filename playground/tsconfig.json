@@ -7,10 +7,7 @@
     "jsx": "react-jsx",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "paths": {
-      "perflens": ["../src/index.ts"]
-    }
+    "skipLibCheck": true
   },
-  "include": ["src", "../src"]
+  "include": ["src"]
 }

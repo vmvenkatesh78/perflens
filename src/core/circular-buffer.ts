@@ -33,10 +33,7 @@ export class CircularBuffer<T> {
       return this.buffer.slice(0, this._count) as T[];
     }
 
-    return [
-      ...this.buffer.slice(this.head),
-      ...this.buffer.slice(0, this.head),
-    ] as T[];
+    return [...this.buffer.slice(this.head), ...this.buffer.slice(0, this.head)] as T[];
   }
 
   /** Items where getTime(item) >= since. */

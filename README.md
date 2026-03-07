@@ -35,7 +35,13 @@ function Dashboard() {
 // option 2: hook — gives you render count + mount/unmount tracking
 function UserList({ users }) {
   useRenderTracker('UserList');
-  return <ul>{users.map(u => <li key={u.id}>{u.name}</li>)}</ul>;
+  return (
+    <ul>
+      {users.map((u) => (
+        <li key={u.id}>{u.name}</li>
+      ))}
+    </ul>
+  );
 }
 ```
 
@@ -51,10 +57,10 @@ perflens tracks render count and duration per component, unnecessary re-renders,
 
 ### `<PerfLensProvider>`
 
-| Prop | Type | Default |
-|------|------|---------|
-| `enabled` | `boolean` | `true` |
-| `config` | `PerfLensConfig` | — |
+| Prop      | Type             | Default |
+| --------- | ---------------- | ------- |
+| `enabled` | `boolean`        | `true`  |
+| `config`  | `PerfLensConfig` | —       |
 
 When `enabled` is `false`, renders children with zero overhead.
 
@@ -66,12 +72,11 @@ Wraps a subtree with its own React Profiler. This is how you get per-component t
 
 Hook for render counting and mount/unmount tracking. No timing data (React Profiler is a component, not a hook).
 
-| Option | Type | Default |
-|--------|------|---------|
-| `trackProps` | `boolean` | `false` |
-| `warnAfterRenders` | `number` | `20` |
-| `slowThreshold` | `number` | `16` |
-| `ignore` | `boolean` | `false` |
+| Option             | Type      | Default |
+| ------------------ | --------- | ------- |
+| `warnAfterRenders` | `number`  | `20`    |
+| `slowThreshold`    | `number`  | `16`    |
+| `ignore`           | `boolean` | `false` |
 
 ### `usePerfLensStore()`
 

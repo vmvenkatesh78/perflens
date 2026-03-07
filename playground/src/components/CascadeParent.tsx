@@ -14,12 +14,14 @@ export function CascadeParent() {
   }, []);
 
   return (
-    <div style={{
-      border: '2px solid #2563eb',
-      borderRadius: 8,
-      padding: 16,
-      minWidth: 200,
-    }}>
+    <div
+      style={{
+        border: '2px solid #2563eb',
+        borderRadius: 8,
+        padding: 16,
+        minWidth: 200,
+      }}
+    >
       <h3 style={{ margin: '0 0 8px', color: '#2563eb' }}>Cascade Parent</h3>
       <p>Context value: {value}</p>
       <CascadeContext.Provider value={value}>
@@ -29,9 +31,7 @@ export function CascadeParent() {
           ))}
         </div>
       </CascadeContext.Provider>
-      <p style={{ fontSize: 12, color: '#999' }}>
-        12 children re-render on every context change
-      </p>
+      <p style={{ fontSize: 12, color: '#999' }}>12 children re-render on every context change</p>
     </div>
   );
 }
@@ -39,13 +39,15 @@ export function CascadeParent() {
 function CascadeChild({ index }: { index: number }) {
   const value = useContext(CascadeContext);
   return (
-    <div style={{
-      background: '#eff6ff',
-      padding: '4px 8px',
-      borderRadius: 4,
-      fontSize: 12,
-      textAlign: 'center',
-    }}>
+    <div
+      style={{
+        background: '#eff6ff',
+        padding: '4px 8px',
+        borderRadius: 4,
+        fontSize: 12,
+        textAlign: 'center',
+      }}
+    >
       #{index}: {value}
     </div>
   );

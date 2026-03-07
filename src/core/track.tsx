@@ -1,4 +1,4 @@
-import { Profiler, useEffect, useRef } from 'react';
+import { Profiler, useEffect, useRef, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import type { RenderPhase } from '../types';
 import { usePerfLensContext } from './provider';
@@ -29,36 +29,43 @@ export function PerfLensTrack({ name, children }: PerfLensTrackProps) {
     return () => {
       try {
         store.recordUnmount(name);
-      } catch (_) {
-        // never crash the host app — perflens is a dev tool, not critical path
+      } catch (err) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn('[perflens] unmount tracking error:', err);
+        }
       }
     };
   }, [store, name]);
 
-  const handleRender = (
-    _id: string,
-    phase: 'mount' | 'update' | 'nested-update',
-    actualDuration: number,
-    baseDuration: number,
-    startTime: number,
-    commitTime: number,
-  ) => {
-    try {
-      // React 19 added 'nested-update' — we just bucket it as 'update'
-      const normalizedPhase: RenderPhase = phase === 'mount' ? 'mount' : 'update';
-      store.recordRender(name, {
-        timestamp: performance.now(),
-        phase: normalizedPhase,
-        actualDuration,
-        baseDuration,
-        startTime,
-        commitTime,
-        propsChanged: null,
-      });
-    } catch (_) {
-      // same deal — don't blow up the app for a perf tracking failure
-    }
-  };
+  const handleRender = useCallback(
+    (
+      _id: string,
+      phase: 'mount' | 'update' | 'nested-update',
+      actualDuration: number,
+      baseDuration: number,
+      startTime: number,
+      commitTime: number,
+    ) => {
+      try {
+        // React 19 added 'nested-update' — we just bucket it as 'update'
+        const normalizedPhase: RenderPhase = phase === 'mount' ? 'mount' : 'update';
+        store.recordRender(name, {
+          timestamp: performance.now(),
+          phase: normalizedPhase,
+          actualDuration,
+          baseDuration,
+          startTime,
+          commitTime,
+          propsChanged: null,
+        });
+      } catch (err) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn('[perflens] profiler callback error:', err);
+        }
+      }
+    },
+    [store, name],
+  );
 
   return (
     <Profiler id={name} onRender={handleRender}>

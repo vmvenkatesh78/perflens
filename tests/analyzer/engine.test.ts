@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { runAnalyzer } from '../../src/analyzer/engine';
 import type { ComponentPerfData } from '../../src/types';
+import { CircularBuffer } from '../../src/core/circular-buffer';
 import { DEFAULT_THRESHOLDS } from '../../src/constants';
 
 function makeComponent(
@@ -19,7 +20,7 @@ function makeComponent(
     lastBaseDuration: 10,
     firstRenderAt: 0,
     lastRenderAt: 100,
-    recentRenders: [],
+    recentRenders: new CircularBuffer(100),
     prevProps: null,
     isMounted: true,
     mountUnmountCycles: 0,
@@ -59,7 +60,10 @@ describe('runAnalyzer', () => {
   it('sorts by severity — critical before warning', () => {
     const components = new Map([
       ['Warning', makeComponent('Warning', { avgDuration: 20, lastBaseDuration: 40 })],
-      ['Critical', makeComponent('Critical', { avgDuration: 40, maxDuration: 50, lastBaseDuration: 80 })],
+      [
+        'Critical',
+        makeComponent('Critical', { avgDuration: 40, maxDuration: 50, lastBaseDuration: 80 }),
+      ],
     ]);
 
     const insights = runAnalyzer(components, thresholds);

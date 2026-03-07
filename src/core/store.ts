@@ -1,4 +1,10 @@
-import type { ComponentPerfData, RenderEvent, Insight, PerfLensSnapshot } from '../types';
+import type {
+  ComponentPerfData,
+  RenderEvent,
+  Insight,
+  PerfLensSnapshot,
+  SerializedComponentPerfData,
+} from '../types';
 import { VERSION } from '../constants';
 import { CircularBuffer } from './circular-buffer';
 
@@ -44,7 +50,7 @@ export class PerfStore {
       entry.updateCount++;
     }
 
-    (entry.recentRenders as unknown as CircularBuffer<RenderEvent>).push(event);
+    entry.recentRenders.push(event);
     this.totalRenders++;
   }
 
@@ -72,14 +78,14 @@ export class PerfStore {
     this.totalRenders = 0;
   }
 
-  /** Creates a JSON-safe copy. CircularBuffer gets flattened to a plain array. */
+  /** Creates a JSON-safe copy. RenderBuffer gets flattened to a plain array. */
   snapshot(): PerfLensSnapshot {
-    const components = Array.from(this.components.values()).map((entry) => ({
-      ...entry,
-      recentRenders: (
-        entry.recentRenders as unknown as CircularBuffer<RenderEvent>
-      ).toArray(),
-    }));
+    const components: SerializedComponentPerfData[] = Array.from(this.components.values()).map(
+      (entry) => ({
+        ...entry,
+        recentRenders: entry.recentRenders.toArray(),
+      }),
+    );
 
     return {
       components,
@@ -127,9 +133,7 @@ function createEntry(name: string, bufferSize: number): ComponentPerfData {
     lastBaseDuration: 0,
     firstRenderAt: now,
     lastRenderAt: now,
-    // CircularBuffer at runtime, typed as RenderEvent[] in the public API.
-    // Consumers see a plain array (via snapshot), internally we get O(1) push.
-    recentRenders: new CircularBuffer<RenderEvent>(bufferSize) as unknown as RenderEvent[],
+    recentRenders: new CircularBuffer<RenderEvent>(bufferSize),
     prevProps: null,
     isMounted: false,
     mountUnmountCycles: 0,

@@ -3,7 +3,7 @@ import reactHooks from 'eslint-plugin-react-hooks';
 
 export default tseslint.config(
   {
-    ignores: ['dist/', 'node_modules/', 'coverage/'],
+    ignores: ['dist/', 'playground/dist/', 'node_modules/', 'coverage/'],
   },
   ...tseslint.configs.recommended,
   {
@@ -21,10 +21,7 @@ export default tseslint.config(
         },
       ],
       '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/consistent-type-imports': [
-        'error',
-        { prefer: 'type-imports' },
-      ],
+      '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'type-imports' }],
       'no-console': ['warn', { allow: ['warn', 'error'] }],
     },
   },

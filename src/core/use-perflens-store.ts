@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { usePerfLensContext } from './provider';
 import type { PerfLensStore } from '../types';
 
@@ -5,13 +6,18 @@ import type { PerfLensStore } from '../types';
 export function usePerfLensStore(): PerfLensStore {
   const { store } = usePerfLensContext();
 
-  return {
-    components: store.components,
-    insights: store.insights,
-    isEnabled: true,
-    startedAt: store.startedAt,
-    totalRenders: store.totalRenders,
-    clear: () => store.clear(),
-    snapshot: () => store.snapshot(),
-  };
+  return useMemo<PerfLensStore>(
+    () => ({
+      components: store.components,
+      get insights() {
+        return [...store.insights];
+      },
+      isEnabled: true,
+      startedAt: store.startedAt,
+      totalRenders: store.totalRenders,
+      clear: () => store.clear(),
+      snapshot: () => store.snapshot(),
+    }),
+    [store],
+  );
 }
