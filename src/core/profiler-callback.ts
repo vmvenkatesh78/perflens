@@ -20,9 +20,9 @@ export function createProfilerCallback(store: PerfStore): ProfilerOnRenderCallba
         commitTime,
         propsChanged: null,
       });
-    } catch (_err) {
+    } catch (err) {
       if (__DEV__) {
-        console.warn('[perflens] profiler callback error:', _err);
+        console.warn('[perflens] profiler callback error:', err);
       }
     }
   };

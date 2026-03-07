@@ -25,7 +25,7 @@ Wraps the subtree with its own Profiler — gives you actual render durations.
 ## Track a Component (hook, no timing)
 
 ```tsx
-useRenderTracker('ExpensiveChart', { trackProps: true });
+useRenderTracker('ExpensiveChart');
 ```
 
 Counts renders and tracks mount/unmount. No timing data (React limitation at the hook level). Use both `PerfLensTrack` + `useRenderTracker` if you want the full picture.

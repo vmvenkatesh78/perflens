@@ -16,10 +16,12 @@ export type {
   PerfLensThresholds,
   ComponentPerfData,
   RenderEvent,
+  RenderBuffer,
   Insight,
   InsightType,
   InsightSeverity,
   PerfLensStore,
   PerfLensSnapshot,
+  SerializedComponentPerfData,
   UseRenderTrackerOptions,
 } from './types';

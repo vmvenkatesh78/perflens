@@ -2,7 +2,6 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    globals: true,
     environment: 'jsdom',
     include: ['tests/**/*.test.{ts,tsx}'],
     coverage: {
@@ -11,8 +10,9 @@ export default defineConfig({
       exclude: [
         'src/**/index.ts',
         'src/types.ts',
-        'src/analyzer/**', // stubs — covered when implemented in v0.3.0
-        'src/panel/**', // stub — covered when implemented in v0.2.0
+        'src/panel/**', // TODO: add panel integration tests
+        'src/analyzer/rules/render-cascade.ts', // stub — v0.3.0
+        'src/analyzer/rules/unnecessary-rerender.ts', // stub — v0.3.0
       ],
       thresholds: {
         statements: 90,

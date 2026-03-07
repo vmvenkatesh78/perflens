@@ -1,6 +1,18 @@
 export type RenderPhase = 'mount' | 'update';
 
 /**
+ * Bounded buffer backing each component's render history.
+ * Consumers use toArray() for snapshots — never treat as a plain array.
+ */
+export interface RenderBuffer {
+  readonly count: number;
+  push(item: RenderEvent): void;
+  toArray(): RenderEvent[];
+  itemsSince(since: number, getTime: (item: RenderEvent) => number): RenderEvent[];
+  clear(): void;
+}
+
+/**
  * Single render event captured by React's Profiler.
  * Durations are in ms, timestamps from performance.now().
  */
@@ -13,7 +25,7 @@ export interface RenderEvent {
   baseDuration: number;
   startTime: number;
   commitTime: number;
-  /** null until trackProps is enabled on the component. */
+  /** Reserved for prop change detection (v0.3.0). Always null until implemented. */
   propsChanged: boolean | null;
 }
 
@@ -35,7 +47,7 @@ export interface ComponentPerfData {
   firstRenderAt: number;
   lastRenderAt: number;
   /** Bounded ring buffer — oldest entries get overwritten. See CircularBuffer. */
-  recentRenders: RenderEvent[];
+  recentRenders: RenderBuffer;
   /** Shallow copy of previous props, for change detection between renders. */
   prevProps: Record<string, unknown> | null;
   isMounted: boolean;
@@ -149,14 +161,14 @@ export interface PerfLensThresholds {
 }
 
 export interface UseRenderTrackerOptions {
-  /** Enable shallow prop comparison between renders. Off by default — has a cost. */
-  trackProps?: boolean;
   /** Override the excessive render threshold for this specific component. */
   warnAfterRenders?: number;
   /** Override slow render threshold (ms) for this specific component. */
   slowThreshold?: number;
   /** Skip tracking entirely. Useful for components you expect to be noisy. */
   ignore?: boolean;
+  // TODO(v0.3.0): trackProps — requires ref callback wiring for prop capture.
+  // Intentionally omitted until implementation is complete. See architecture.md.
 }
 
 // Store
@@ -175,7 +187,7 @@ export interface PerfLensStore {
 
 /** Flat, serializable version of the store. Map → array so JSON.stringify works. */
 export interface PerfLensSnapshot {
-  components: ComponentPerfData[];
+  components: SerializedComponentPerfData[];
   insights: Insight[];
   metadata: {
     capturedAt: number;
@@ -183,4 +195,9 @@ export interface PerfLensSnapshot {
     totalRenders: number;
     perflensVersion: string;
   };
+}
+
+/** JSON-safe version of ComponentPerfData with buffer flattened to array. */
+export interface SerializedComponentPerfData extends Omit<ComponentPerfData, 'recentRenders'> {
+  recentRenders: RenderEvent[];
 }

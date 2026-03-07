@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo, useRef, useEffect, Profiler } from 'react';
 import type { ReactNode } from 'react';
-import type { PerfLensConfig, PerfLensThresholds, Insight } from '../types';
+import type { PerfLensConfig, PerfLensThresholds, PanelPosition, Insight } from '../types';
 import { PerfStore } from './store';
 import { DEFAULT_CONFIG, DEFAULT_THRESHOLDS } from '../constants';
 import { createProfilerCallback } from './profiler-callback';
@@ -16,7 +16,7 @@ interface PerfLensContextValue {
 /** Config with all optionals resolved to concrete values. */
 export interface ResolvedConfig {
   enabled: boolean;
-  panelPosition: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+  panelPosition: PanelPosition;
   toggleKey: string;
   thresholds: PerfLensThresholds;
   maxTrackedComponents: number;
@@ -47,7 +47,11 @@ export function PerfLensProvider({ children, config, enabled }: PerfLensProvider
     return <>{children}</>;
   }
 
-  return <PerfLensProviderInner config={config}>{children}</PerfLensProviderInner>;
+  // spread config only if defined — exactOptionalPropertyTypes
+  // prevents passing undefined to an optional prop
+  const innerProps = config ? { config } : {};
+
+  return <PerfLensProviderInner {...innerProps}>{children}</PerfLensProviderInner>;
 }
 
 function PerfLensProviderInner({
@@ -69,22 +73,24 @@ function PerfLensProviderInner({
     );
   }
 
-  const onRender = useMemo(() => createProfilerCallback(storeRef.current!), []);
+  // narrowing — storeRef.current is guaranteed non-null after the block above
+  const store = storeRef.current;
+
+  const onRender = useMemo(() => createProfilerCallback(store), [store]);
 
   const contextValue = useMemo<PerfLensContextValue>(
     () => ({
-      store: storeRef.current!,
+      store,
       config: resolvedConfig,
     }),
-    [resolvedConfig],
+    [store, resolvedConfig],
   );
 
   // run the analyzer on a timer — sweeps all tracked components for issues.
   // writes directly to store.insights (mutable), no React state involved.
   useEffect(() => {
     const id = setInterval(() => {
-      const store = storeRef.current;
-      if (!store || store.components.size === 0) return;
+      if (store.components.size === 0) return;
 
       const newInsights = runAnalyzer(store.components, resolvedConfig.thresholds);
 
@@ -99,15 +105,17 @@ function PerfLensProviderInner({
         for (const insight of fresh) {
           try {
             resolvedConfig.onInsight(insight);
-          } catch (_err) {
-            // consumer's callback, not our problem if it throws
+          } catch (err) {
+            if (process.env.NODE_ENV !== 'production') {
+              console.warn('[perflens] onInsight callback error:', err);
+            }
           }
         }
       }
     }, resolvedConfig.analyzerInterval);
 
     return () => clearInterval(id);
-  }, [resolvedConfig]);
+  }, [resolvedConfig, store]);
 
   return (
     <PerfLensContext.Provider value={contextValue}>
@@ -131,17 +139,24 @@ function PerfLensProviderInner({
 // Config resolution
 
 function resolveConfig(config?: PerfLensConfig): ResolvedConfig {
-  return {
+  const base = {
     enabled: config?.enabled ?? DEFAULT_CONFIG.enabled,
     panelPosition: config?.panelPosition ?? DEFAULT_CONFIG.panelPosition,
     toggleKey: config?.toggleKey ?? DEFAULT_CONFIG.toggleKey,
     maxTrackedComponents: config?.maxTrackedComponents ?? DEFAULT_CONFIG.maxTrackedComponents,
     maxRenderEvents: config?.maxRenderEvents ?? DEFAULT_CONFIG.maxRenderEvents,
     analyzerInterval: config?.analyzerInterval ?? DEFAULT_CONFIG.analyzerInterval,
-    onInsight: config?.onInsight,
     thresholds: {
       ...DEFAULT_THRESHOLDS,
       ...config?.thresholds,
     },
   };
+
+  // only set onInsight if provided — exactOptionalPropertyTypes
+  // prevents assigning undefined to optional properties
+  if (config?.onInsight) {
+    return { ...base, onInsight: config.onInsight };
+  }
+
+  return base;
 }

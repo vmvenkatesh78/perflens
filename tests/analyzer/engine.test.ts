@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { runAnalyzer } from '../../src/analyzer/engine';
 import type { ComponentPerfData } from '../../src/types';
+import { CircularBuffer } from '../../src/core/circular-buffer';
 import { DEFAULT_THRESHOLDS } from '../../src/constants';
 
 function makeComponent(
@@ -19,7 +20,7 @@ function makeComponent(
     lastBaseDuration: 10,
     firstRenderAt: 0,
     lastRenderAt: 100,
-    recentRenders: [],
+    recentRenders: new CircularBuffer(100),
     prevProps: null,
     isMounted: true,
     mountUnmountCycles: 0,

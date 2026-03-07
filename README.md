@@ -74,7 +74,6 @@ Hook for render counting and mount/unmount tracking. No timing data (React Profi
 
 | Option             | Type      | Default |
 | ------------------ | --------- | ------- |
-| `trackProps`       | `boolean` | `false` |
 | `warnAfterRenders` | `number`  | `20`    |
 | `slowThreshold`    | `number`  | `16`    |
 | `ignore`           | `boolean` | `false` |

@@ -3,6 +3,7 @@ dist/
 coverage/
 *.tsbuildinfo
 .DS_Store
+._*
 *.log
 setup-git.sh
 playground/dist/
