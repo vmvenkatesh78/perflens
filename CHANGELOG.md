@@ -2,6 +2,42 @@
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-03-05
+
+Code audit and panel rewrite. Zero unsafe casts, full accessibility, strict type safety.
+
+### Breaking
+
+- `trackProps` removed from `UseRenderTrackerOptions` — was shipping broken results. Deferred to v0.3.x when prop capture is implemented.
+- `ComponentPerfData.recentRenders` is now `RenderBuffer` instead of `RenderEvent[]` — consumers must use `.toArray()` to get an array. Snapshot API is unchanged.
+- `SerializedComponentPerfData` added for snapshot consumers who need the flat array form.
+
+### Fixed
+
+- **Type safety:** `RenderBuffer` interface replaces 8 unsafe `as unknown as` casts. The type system no longer lies about the runtime shape of render data.
+- **Hooks violation:** `useRenderTracker` had a conditional return before hooks. Guards moved inside each effect.
+- **Portal leak:** panel portal element now created in `useEffect` with cleanup on unmount.
+- **Silent failures:** all error catch blocks now warn in development, consistent `[perflens]` prefix.
+- **Non-null assertions:** eliminated from provider — proper narrowing instead.
+- **`usePerfLensStore`:** returns stable memoized reference, insights returned as copy.
+- **`PerfLensTrack`:** `handleRender` wrapped in `useCallback` to prevent unnecessary Profiler bookkeeping.
+- **`exactOptionalPropertyTypes`:** enabled in tsconfig — surfaced and fixed 3 real type bugs.
+- **Coverage config:** stale exclusions removed, now only excludes actual stubs.
+
+### Changed
+
+- Panel rewritten and decomposed into 4 files: `PerfLensPanel.tsx`, `ComponentTable.tsx`, `InsightList.tsx`, `panel-utils.ts`
+- Panel accessibility: ARIA `tablist`/`tab`/`tabpanel`, `role="dialog"`, focus management, `aria-label` on all buttons, `scope` on table headers, decorative elements hidden from screen readers
+- `StatusDot` now reads thresholds from context instead of hardcoded magic numbers
+- `ResolvedConfig.panelPosition` uses `PanelPosition` type instead of inline union
+- Playground imports from published `react-perflens` npm package instead of local source aliases
+- Vercel deploy config added for live playground
+
+### Bundle size
+
+- Core: 3.63 KB gzipped (down from 3.73 KB)
+- Full (with panel): 8.26 KB gzipped
+
 ## [0.2.1] - 2026-02-28
 
 Patch release — npm package name fix and documentation corrections.

@@ -1,6 +1,6 @@
 {
   "name": "react-perflens",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "React performance toolkit — track renders, surface insights, fix bottlenecks",
   "type": "module",
   "main": "./dist/index.cjs",
