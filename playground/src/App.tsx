@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { PerfLensProvider, PerfLensTrack } from 'perflens';
-import { PerfLensPanel } from 'perflens/panel';
+import { PerfLensProvider, PerfLensTrack } from 'react-perflens';
+import { PerfLensPanel } from 'react-perflens/panel';
 import { RenderSpammer } from './components/RenderSpammer';
 import { SlowComponent } from './components/SlowComponent';
 import { UnstableProps } from './components/UnstableProps';
