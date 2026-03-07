@@ -104,7 +104,7 @@
   "bugs": {
     "url": "https://github.com/vmvenkatesh78/perflens/issues"
   },
-  "homepage": "https://github.com/vmvenkatesh78/perflens#readme",
+  "homepage": "https://perflens.vercel.app",
   "author": "V M Venkatesh <vmvenkatesh78@gmail.com>",
   "license": "MIT",
   "engines": {
