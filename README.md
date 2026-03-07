@@ -2,14 +2,14 @@
 
 React performance toolkit. Track renders, surface insights, fix bottlenecks.
 
-## Install
+[Live playground](https://perflens.vercel.app) · [npm](https://www.npmjs.com/package/react-perflens)
 
+## Install
 ```bash
 npm install react-perflens
 ```
 
 ## Quick Start
-
 ```tsx
 import { PerfLensProvider, PerfLensTrack, useRenderTracker } from 'react-perflens';
 import { PerfLensPanel } from 'react-perflens/panel';
@@ -85,7 +85,6 @@ Returns the store directly. Build custom UIs or pipe data externally.
 ### `<PerfLensPanel />`
 
 Floating overlay. Toggle with `Ctrl+Shift+P`. Import from `react-perflens/panel` — separated so the UI code doesn't bloat your core bundle.
-
 ```tsx
 import { PerfLensPanel } from 'react-perflens/panel';
 ```
@@ -99,7 +98,6 @@ import { PerfLensPanel } from 'react-perflens/panel';
 - React 18+
 
 ## Development
-
 ```bash
 git clone https://github.com/vmvenkatesh78/perflens.git
 cd perflens
