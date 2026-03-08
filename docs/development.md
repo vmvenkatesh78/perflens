@@ -50,18 +50,18 @@ npm run lint && npm run typecheck && npm test && npm run build && npm run size
 src/
 ├── core/           # Data collection. Profiler, store, hooks.
 ├── analyzer/       # Insight generation. One file per rule.
-├── panel/          # Floating UI overlay (v0.2.0).
-├── detail/         # Expanded view (v0.2.0).
+│   └── rules/      # Individual detection rules.
+├── panel/          # Floating UI overlay.
 ├── types.ts        # All shared interfaces.
 ├── constants.ts    # Defaults and thresholds.
 └── index.ts        # Public API surface.
 
 playground/         # Vite app with anti-pattern demo components.
 tests/              # Mirrors src/ structure.
-docs/               # Architecture, API reference, recipes.
+docs/               # Architecture, decisions, guides, API reference.
 ```
 
-The three-layer split (core → analyzer → UI) is intentional. Core has zero UI dependencies. Analyzer is pure functions. UI reads from the store on a timer. See `docs/architecture.md` for the full picture.
+The three-layer split (core → analyzer → panel) is intentional. Core has zero UI dependencies. Analyzer is pure functions. Panel reads from the store on a timer. See `docs/architecture.md` for the full picture, `docs/decisions.md` for why each decision was made.
 
 ## Code style
 

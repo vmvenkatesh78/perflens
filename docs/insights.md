@@ -54,7 +54,7 @@ The analyzer runs on a 2-second interval (configurable via `analyzerInterval`). 
 
 ## Not Yet Implemented
 
-These rules are planned for v0.3.0:
+These rules are planned for a future release:
 
 **Unnecessary Re-render** — Detects re-renders where props haven't meaningfully changed. Needs the prop capture system to be finished first (currently stubbed).
 
