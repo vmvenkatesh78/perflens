@@ -23,4 +23,4 @@ export const DEFAULT_CONFIG = {
 
 export const PANEL_POLL_INTERVAL = 500;
 
-export const VERSION = '0.3.0';
+export const VERSION = '0.4.0';
