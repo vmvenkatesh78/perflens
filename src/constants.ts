@@ -8,6 +8,8 @@ export const DEFAULT_THRESHOLDS: PerfLensThresholds = {
   rapidMountCycles: 5,
   rapidMountWindow: 5_000,
   cascadeChildThreshold: 5,
+  unnecessaryRerenderRatio: 50,
+  unnecessaryRerenderMinCount: 5,
 };
 
 export const DEFAULT_CONFIG = {

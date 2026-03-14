@@ -3,11 +3,19 @@ import type { UseRenderTrackerOptions } from '../types';
 import { usePerfLensContext } from './provider';
 
 /**
- * Tracks render count for a specific component.
+ * Tracks render count and optional prop changes for a specific component.
  * Side-effect only — returns nothing.
  *
  * Works standalone (render count + mount/unmount) or alongside
  * PerfLensTrack (which adds Profiler timing on top).
+ *
+ * Pass `props` to enable unnecessary re-render detection:
+ * ```tsx
+ * function UserList({ users, onSelect }: Props) {
+ *   useRenderTracker('UserList', { props: { users, onSelect } });
+ *   return ...;
+ * }
+ * ```
  *
  * @param componentName - Label shown in the panel.
  * @param options - Per-component overrides.
@@ -15,6 +23,7 @@ import { usePerfLensContext } from './provider';
 export function useRenderTracker(componentName: string, options?: UseRenderTrackerOptions): void {
   const { store } = usePerfLensContext();
   const renderCountRef = useRef(0);
+  const prevPropsRef = useRef<Record<string, unknown> | null>(null);
   const ignore = options?.ignore ?? false;
 
   // record every render — duration stays 0 since hooks can't access Profiler data.
@@ -24,6 +33,14 @@ export function useRenderTracker(componentName: string, options?: UseRenderTrack
 
     try {
       const isMount = renderCountRef.current === 0;
+      const currentProps = options?.props ?? null;
+
+      // determine if props changed — null means prop tracking not enabled
+      let propsChanged: boolean | null = null;
+      if (currentProps !== null && prevPropsRef.current !== null && !isMount) {
+        propsChanged = !shallowEqual(prevPropsRef.current, currentProps);
+      }
+
       store.recordRender(componentName, {
         timestamp: performance.now(),
         phase: isMount ? 'mount' : 'update',
@@ -31,8 +48,14 @@ export function useRenderTracker(componentName: string, options?: UseRenderTrack
         baseDuration: 0,
         startTime: 0,
         commitTime: 0,
-        propsChanged: null,
+        propsChanged,
       });
+
+      // store current props for next comparison
+      if (currentProps !== null) {
+        prevPropsRef.current = { ...currentProps };
+      }
+
       renderCountRef.current++;
     } catch (err) {
       if (process.env.NODE_ENV !== 'production') {

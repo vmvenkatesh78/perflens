@@ -4,9 +4,10 @@ import * as slowRender from './rules/slow-render';
 import * as excessiveRerenders from './rules/excessive-rerenders';
 import * as rapidMountUnmount from './rules/rapid-mount-unmount';
 import * as wastedMemo from './rules/wasted-memo';
+import * as unnecessaryRerender from './rules/unnecessary-rerender';
 
 // all active rules — add new ones here as they ship
-const rules = [slowRender, excessiveRerenders, rapidMountUnmount, wastedMemo];
+const rules = [slowRender, excessiveRerenders, rapidMountUnmount, wastedMemo, unnecessaryRerender];
 
 /**
  * Sweeps every tracked component through every active rule.
