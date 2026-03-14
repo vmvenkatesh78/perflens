@@ -33,15 +33,10 @@ function Dashboard() {
 }
 
 // option 2: hook — gives you render count + mount/unmount tracking
-function UserList({ users }) {
-  useRenderTracker('UserList');
-  return (
-    <ul>
-      {users.map((u) => (
-        <li key={u.id}>{u.name}</li>
-      ))}
-    </ul>
-  );
+// option 2: hook — gives you render count + unnecessary rerender detection
+function UserList({ users, onSelect }) {
+  useRenderTracker('UserList', { props: { users, onSelect } });
+  return <ul>{users.map(u => <li key={u.id}>{u.name}</li>)}</ul>;
 }
 ```
 
@@ -72,12 +67,12 @@ Wraps a subtree with its own React Profiler. This is how you get per-component t
 
 Hook for render counting and mount/unmount tracking. No timing data (React Profiler is a component, not a hook).
 
-| Option             | Type      | Default |
-| ------------------ | --------- | ------- |
-| `warnAfterRenders` | `number`  | `20`    |
-| `slowThreshold`    | `number`  | `16`    |
-| `ignore`           | `boolean` | `false` |
-
+| Option             | Type                       | Default |
+| ------------------ | -------------------------- | ------- |
+| `props`            | `Record<string, unknown>`  | —       |
+| `warnAfterRenders` | `number`                   | `20`    |
+| `slowThreshold`    | `number`                   | `16`    |
+| `ignore`           | `boolean`                  | `false` |
 ### `usePerfLensStore()`
 
 Returns the store directly. Build custom UIs or pipe data externally.
