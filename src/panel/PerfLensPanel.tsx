@@ -24,21 +24,22 @@ export function PerfLensPanel() {
   const [insights, setInsights] = useState<Insight[]>([]);
   const [totalRenders, setTotalRenders] = useState(0);
   const [activeTab, setActiveTab] = useState<TabId>('components');
-  const portalRef = useRef<HTMLElement | null>(null);
+  const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
 
-  // C6: create and clean up portal container in an effect
+  // create and clean up portal container — state setter triggers re-render
+  // so the component picks up the container on the next render cycle
   useEffect(() => {
     if (typeof document === 'undefined') return;
 
     const container = document.createElement('div');
     container.id = 'perflens-panel-root';
     document.body.appendChild(container);
-    portalRef.current = container;
+    setPortalContainer(container);
 
     return () => {
-      portalRef.current = null;
+      setPortalContainer(null);
       document.body.removeChild(container);
     };
   }, []);
@@ -122,7 +123,7 @@ export function PerfLensPanel() {
     }
   }, []);
 
-  if (!portalRef.current) return null;
+  if (!portalContainer) return null;
 
   const position = positionStyle(config.panelPosition);
 
@@ -167,7 +168,7 @@ export function PerfLensPanel() {
           </span>
         )}
       </button>,
-      portalRef.current,
+      portalContainer,
     );
   }
 
@@ -279,7 +280,7 @@ export function PerfLensPanel() {
         </>
       )}
     </div>,
-    portalRef.current,
+    portalContainer,
   );
 }
 

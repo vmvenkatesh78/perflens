@@ -158,17 +158,31 @@ export interface PerfLensThresholds {
   rapidMountCycles: number;
   rapidMountWindow: number;
   cascadeChildThreshold: number;
+  /** % of update renders that must be unnecessary before flagging. Default: 50 */
+  unnecessaryRerenderRatio: number;
+  /** Minimum update renders in window before the rule activates. Default: 5 */
+  unnecessaryRerenderMinCount: number;
 }
 
 export interface UseRenderTrackerOptions {
+  /**
+   * Pass the component's props to enable unnecessary re-render detection.
+   * perflens shallow-compares them between renders to determine if the
+   * re-render could have been avoided with React.memo.
+   *
+   * @example
+   * function UserList({ users, onSelect }: Props) {
+   *   useRenderTracker('UserList', { props: { users, onSelect } });
+   *   return ...;
+   * }
+   */
+  props?: Record<string, unknown>;
   /** Override the excessive render threshold for this specific component. */
   warnAfterRenders?: number;
   /** Override slow render threshold (ms) for this specific component. */
   slowThreshold?: number;
   /** Skip tracking entirely. Useful for components you expect to be noisy. */
   ignore?: boolean;
-  // TODO(v0.3.0): trackProps — requires ref callback wiring for prop capture.
-  // Intentionally omitted until implementation is complete. See architecture.md.
 }
 
 // Store
