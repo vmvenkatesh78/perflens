@@ -1,7 +1,34 @@
-# Changelog
+markdown# Changelog
 
-## [Unreleased]
+## [0.5.0] - 2026-03-14
 
+All 6 analyzer rules implemented. No stubs remaining.
+
+### Added
+- `render-cascade` rule — detects when 5+ components re-render in the same React commit. Identifies the heaviest renderer as the cascade root. Critical at 2x threshold or when total cascade duration exceeds 32ms.
+- Cross-component rule pattern — engine now supports `checkAll()` rules that receive the full components map for relationship analysis.
+- 13 render-cascade tests
+
+### Changed
+- Engine refactored with `ComponentRule` and `GlobalRule` interfaces
+- Coverage exclusions removed — all rules now tested
+- 128 tests across 15 files
+
+### Bundle size
+- Core: 4.75 KB gzipped
+- Full: 10.37 KB gzipped
+
+## [0.4.0] - 2026-03-14
+
+### Added
+- `unnecessary-rerender` rule — detects re-renders where props didn't change
+- `props` option on `useRenderTracker` — pass component props for shallow comparison between renders
+- 11 unnecessary-rerender tests
+- 8 panel integration tests
+- `unnecessaryRerenderRatio` and `unnecessaryRerenderMinCount` thresholds
+
+### Fixed
+- Panel portal uses `useState` instead of `useRef` — portal now triggers re-render on mount
 ## [0.3.0] - 2026-03-05
 
 Code audit and panel rewrite. Zero unsafe casts, full accessibility, strict type safety.
