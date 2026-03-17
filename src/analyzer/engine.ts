@@ -5,9 +5,29 @@ import * as excessiveRerenders from './rules/excessive-rerenders';
 import * as rapidMountUnmount from './rules/rapid-mount-unmount';
 import * as wastedMemo from './rules/wasted-memo';
 import * as unnecessaryRerender from './rules/unnecessary-rerender';
+import * as renderCascade from './rules/render-cascade';
 
-// all active rules — add new ones here as they ship
-const rules = [slowRender, excessiveRerenders, rapidMountUnmount, wastedMemo, unnecessaryRerender];
+/** Per-component rule — called once per tracked component. */
+interface ComponentRule {
+  check(name: string, data: ComponentPerfData, thresholds: PerfLensThresholds, now?: number): Insight[];
+}
+
+/** Cross-component rule — receives the full map, analyzes relationships. */
+interface GlobalRule {
+  checkAll(components: Map<string, ComponentPerfData>, thresholds: PerfLensThresholds, now?: number): Insight[];
+}
+
+// per-component rules — each fires independently per component
+const componentRules: ComponentRule[] = [
+  slowRender,
+  excessiveRerenders,
+  rapidMountUnmount,
+  wastedMemo,
+  unnecessaryRerender,
+];
+
+// cross-component rules — need the full map to detect relationships
+const globalRules: GlobalRule[] = [renderCascade];
 
 /**
  * Sweeps every tracked component through every active rule.
@@ -23,20 +43,32 @@ export function runAnalyzer(
 ): Insight[] {
   const seen = new Map<string, Insight>();
 
+  // per-component rules
   for (const [name, data] of components) {
-    for (const rule of rules) {
+    for (const rule of componentRules) {
       try {
         const hits = rule.check(name, data, thresholds);
         for (const insight of hits) {
-          // latest insight for a given id wins — data might have changed
-          // since the last sweep
           seen.set(insight.id, insight);
         }
       } catch (_err) {
-        // one bad rule shouldn't take down the whole analyzer
         if (process.env.NODE_ENV !== 'production') {
           console.warn(`[perflens] analyzer rule failed for <${name}>:`, _err);
         }
+      }
+    }
+  }
+
+  // cross-component rules
+  for (const rule of globalRules) {
+    try {
+      const hits = rule.checkAll(components, thresholds);
+      for (const insight of hits) {
+        seen.set(insight.id, insight);
+      }
+    } catch (_err) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn('[perflens] global analyzer rule failed:', _err);
       }
     }
   }
